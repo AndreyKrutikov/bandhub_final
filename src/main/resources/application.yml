@@ -1,0 +1,42 @@
+spring:
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-description: Flyway Scripts
+    locations: classpath:/migration
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    url: ${spring.datasource.url}
+    default-schema: bandhub
+    out-of-order: true
+    ignore-migration-patterns: '*:ignored'
+  datasource:
+    hikari:
+      jdbc-url: "jdbc:postgresql://localhost:5432/bandhubDB"
+      maximum-pool-size: 10
+      driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: "jdbc:postgresql://localhost:5432/bandhubDB"
+      # JPA configuration
+  jpa:
+    #hibernate:
+      #ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+        default_schema: bandhub
+    open-in-view: false
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
+  #security:
+    #user:
+      #password: 1111
+
+server:
+  port: 8080
+
+jwt:
+  secret: nieh89*Ujj_00098kniu>
+  expiration: 60000
+
