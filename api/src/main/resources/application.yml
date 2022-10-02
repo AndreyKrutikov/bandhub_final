@@ -1,3 +1,5 @@
+server:
+  port: 8080
 spring:
   flyway:
     enabled: true
@@ -18,10 +20,10 @@ spring:
     username: postgres
     password: postgres
     url: "jdbc:postgresql://localhost:5432/bandhubDB"
-      # JPA configuration
+    # JPA configuration
   jpa:
     #hibernate:
-      #ddl-auto: create
+    #ddl-auto: create
     show-sql: true
     properties:
       hibernate:
@@ -29,14 +31,10 @@ spring:
         default_schema: bandhub
     open-in-view: false
     database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
-  #security:
-    #user:
-      #password: 1111
-
-server:
-  port: 8080
-
 jwt:
   secret: nieh89*Ujj_00098kniu>
   expiration: 60000
 
+#security:
+#user:
+#password: 1111
