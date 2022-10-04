@@ -70,7 +70,6 @@ public class AccountController {
     @PostMapping("/create")
     @Transactional
     public ResponseEntity<Object> createNewAccount(@RequestBody RegistrationDto body) {
-        log.info(body.toString());
         Timestamp now = new Timestamp(new Date().getTime());
 
         Account account = new Account();

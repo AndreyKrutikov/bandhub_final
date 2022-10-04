@@ -1,13 +1,20 @@
 package by.krutikov.domain;
 
+import by.krutikov.domain.converter.ExperienceAttributeConverter;
+import by.krutikov.domain.converter.InstrumentAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
 import lombok.Data;
-import org.locationtech.jts.geom.Geometry;
+import lombok.Getter;
+import lombok.Setter;
+import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,14 +23,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.io.Serializable;
 import java.sql.Timestamp;
 
 
 @Data
 @Entity
 @Table(name = "user_profiles")
-public class Profile implements Serializable {
+public class Profile {
     private static final int SRID = 4326;
     private static final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), SRID);
 
@@ -40,20 +46,26 @@ public class Profile implements Serializable {
     private Account account;
 
     @Transient
-    private Double longitude;
+    private double lon;
+
     @Transient
-    private Double latitude;
+    private double lat;
+
     @JsonIgnore
-    private Geometry location;
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Point location;// = geometryFactory.createPoint(new Coordinate(lon, lat));
 
     @Column(name = "cell_phone_number")
     private String phoneNumber;
 
-//    //@Column
-//    private InstrumentType instrument;
-//
-//    //@Column
-//    private Experience experience;
+    @Column(name = "instrument_id")
+    @Convert(converter = InstrumentAttributeConverter.class)
+    private InstrumentType instrument;
+
+    @Column(name = "experience_id")
+    @Convert(converter = ExperienceAttributeConverter.class)
+    private ExperienceLevel experience;
 
     @OneToOne
     @JoinColumn(name = "media_id")
@@ -72,20 +84,26 @@ public class Profile implements Serializable {
     @Column(name = "date_modified")
     private Timestamp dateModified;
 
-    public Double getLongitude() {
+    public double getLon() {
         return location.getCoordinate().getX();
     }
 
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
+    public void setLon(double lon) {
+        this.lon = lon;
+        this.setLocation();
     }
 
-    public Double getLatitude() {
+    public double getLat() {
         return location.getCoordinate().getY();
     }
 
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
+    public void setLat(double lat) {
+        this.lat = lat;
+        this.setLocation();
+    }
+
+    private void setLocation() {
+        this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
     }
 }
 

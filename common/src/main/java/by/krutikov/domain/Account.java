@@ -6,7 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,11 +24,9 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Set;
 
-@Builder
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(exclude = {"roles", "profile"})
+@ToString(exclude = {"roles", "profile"})
 @Entity
 @Table(name = "accounts")
 public class Account {
@@ -52,6 +53,7 @@ public class Account {
     private Timestamp dateModified;
 
     @ManyToMany(mappedBy = "accounts", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    //@JsonManagedReference
     @JsonIgnoreProperties("accounts")
     private Set<Role> roles;
 

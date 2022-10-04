@@ -2,11 +2,14 @@ package by.krutikov.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,12 +22,8 @@ import java.util.Set;
 
 @Data
 @Entity
-//@EqualsAndHashCode(exclude = {
-//        "accounts"
-//})
-//@ToString(exclude = {
-//        "accounts"
-//})
+//@EqualsAndHashCode(exclude = "accounts")
+//@ToString(exclude = "accounts")
 @Table(name = "roles")
 public class Role {
 
@@ -42,7 +41,7 @@ public class Role {
     @Column(name = "date_modified")
     private Timestamp dateModified;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "l_account_roles",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "account_id")
