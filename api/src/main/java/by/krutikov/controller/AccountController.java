@@ -1,7 +1,6 @@
 package by.krutikov.controller;
 
 import by.krutikov.domain.Account;
-import by.krutikov.domain.Role;
 import by.krutikov.dto.RegistrationDto;
 import by.krutikov.repository.AccountRepository;
 import by.krutikov.repository.RoleRepository;
@@ -22,10 +21,7 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @RestController

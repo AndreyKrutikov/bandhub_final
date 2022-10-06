@@ -4,32 +4,45 @@ import by.krutikov.domain.converter.ExperienceAttributeConverter;
 import by.krutikov.domain.converter.InstrumentAttributeConverter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AccessLevel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Data
+@EqualsAndHashCode(exclude = {"media", "account", "myReactions", "otherReactions"})
+@ToString(exclude = {"media", "account", "myReactions", "otherReactions"})
 @Entity
 @Table(name = "user_profiles")
-public class Profile {
+public class UserProfile {
     private static final int SRID = 4326;
     private static final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), SRID);
 
@@ -52,7 +65,7 @@ public class Profile {
     private double lat;
 
     @JsonIgnore
-    @Getter(AccessLevel.NONE)
+    //@Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private Point location;// = geometryFactory.createPoint(new Coordinate(lon, lat));
 
@@ -67,9 +80,9 @@ public class Profile {
     @Convert(converter = ExperienceAttributeConverter.class)
     private ExperienceLevel experience;
 
-    @OneToOne
-    @JoinColumn(name = "media_id")
-    @JsonBackReference
+
+    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JsonManagedReference
     private Media media;
 
     @Column
@@ -83,6 +96,16 @@ public class Profile {
 
     @Column(name = "date_modified")
     private Timestamp dateModified;
+
+    @OneToMany(mappedBy = "toProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @Fetch(value = FetchMode.SELECT)
+    @JsonManagedReference
+    private Set<Reaction> myReactions;
+
+    @OneToMany(mappedBy = "fromProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @Fetch(value = FetchMode.SELECT)
+    @JsonManagedReference
+    private Set<Reaction> otherReactions;
 
     public double getLon() {
         return location.getCoordinate().getX();

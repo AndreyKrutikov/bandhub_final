@@ -1,11 +1,8 @@
 package by.krutikov.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
@@ -27,19 +25,20 @@ public class Media {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column (name = "photo_url")
+    @Column(name = "photo_url")
     private String photoUrl;
 
-    @Column (name = "demo_url")
+    @Column(name = "demo_url")
     private String demoUrl;
 
-    @Column (name = "date_created")
+    @Column(name = "date_created")
     private Timestamp dateCreated;
 
-    @Column (name = "date_modified")
+    @Column(name = "date_modified")
     private Timestamp dateModified;
 
-    @OneToOne(mappedBy = "media", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JsonManagedReference
-    private Profile profile;
+    @OneToOne
+    @JoinColumn(name = "id")
+    @JsonBackReference
+    private UserProfile userProfile;
 }

@@ -1,7 +1,10 @@
 package by.krutikov.domain;
 
 import by.krutikov.domain.converter.ReactionAttributeConverter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -9,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 
@@ -21,11 +26,15 @@ public class Reaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "from_profile")
-    private Long fromProfile;
+    @ManyToOne
+    @JoinColumn(name = "from_profile")
+    @JsonBackReference
+    private UserProfile fromProfile;
 
-    @Column(name = "to_profile")
-    private Long toProfile;
+    @ManyToOne
+    @JoinColumn(name = "to_profile")
+    @JsonBackReference
+    private UserProfile toProfile;
 
     @Column(name = "reaction_type_id")
     @Convert(converter = ReactionAttributeConverter.class)
@@ -36,5 +45,6 @@ public class Reaction {
 
     @Column(name = "date_modified")
     private Timestamp dateModified;
+
 
 }

@@ -2,13 +2,8 @@ package by.krutikov.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.CascadeType;
@@ -25,8 +20,8 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode(exclude = {"roles", "profile"})
-@ToString(exclude = {"roles", "profile"})
+@EqualsAndHashCode(exclude = {"roles", "userProfile"})
+@ToString(exclude = {"roles", "userProfile"})
 @Entity
 @Table(name = "accounts")
 public class Account {
@@ -59,5 +54,5 @@ public class Account {
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
-    private Profile profile;
+    private UserProfile userProfile;
 }

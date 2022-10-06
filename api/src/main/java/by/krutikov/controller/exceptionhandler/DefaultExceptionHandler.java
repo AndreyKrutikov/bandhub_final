@@ -8,6 +8,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 
 @ControllerAdvice
@@ -26,6 +27,8 @@ public class DefaultExceptionHandler {
 
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Object> handleEntityNotFountException(Exception e) {
@@ -49,6 +52,20 @@ public class DefaultExceptionHandler {
                 .exceptionId(UUIDGenerator.generateUUID())
                 .errorCode(3)
                 .errorMessage("Missing request parameters")
+                .e(e.getClass().toString())
+                .build();
+
+        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<Object> handleEntityNotFoundException(Exception e) {
+
+        ErrorContainer error = ErrorContainer
+                .builder()
+                .exceptionId(UUIDGenerator.generateUUID())
+                .errorCode(4)
+                .errorMessage("No entity found")
                 .e(e.getClass().toString())
                 .build();
 
