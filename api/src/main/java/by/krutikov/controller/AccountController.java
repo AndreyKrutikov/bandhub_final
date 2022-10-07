@@ -47,18 +47,10 @@ public class AccountController {
         );
     }
 
-//    @GetMapping("/find")
-//    public ResponseEntity<Object> findByUsername(@RequestParam(value = "login") String login) {
-//        return new ResponseEntity<>(
-//                Collections.singletonMap("account", accountRepository.findByLogin(login)), HttpStatus.OK
-//        );
-//    }
-
-    @GetMapping("/find")
-    public ResponseEntity<Object> findByUsername(@RequestParam String login,
-                                                 @RequestParam String email) {
+    @GetMapping("/find-by-email")
+    public ResponseEntity<Object> findByEmail(@RequestParam String email) {
         return new ResponseEntity<>(
-                Collections.singletonMap("account", accountRepository.findByEmailAndLogin(email, login)), HttpStatus.OK
+                Collections.singletonMap("account", accountRepository.findByEmail(email)), HttpStatus.OK
         );
     }
 
@@ -69,7 +61,6 @@ public class AccountController {
         Timestamp now = new Timestamp(new Date().getTime());
 
         Account account = new Account();
-        account.setLogin(body.getLogin());
         account.setPassword(body.getPassword());
         account.setEmail(body.getEmail());
         account.setDateCreated(now);

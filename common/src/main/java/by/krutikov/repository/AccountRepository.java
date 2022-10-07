@@ -11,9 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findByLogin(String login);
 
-    Optional<Account> findByEmailAndLogin(String email, String login);
+    Optional<Account> findByEmail(String email);
 
     @Modifying
     @Query(value = "insert into l_account_roles(account_id, role_id) values (:account_id, :role_id)", nativeQuery = true)

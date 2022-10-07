@@ -49,12 +49,27 @@ public class UserProfileController {
 
     @GetMapping("/{id}/distance-sorted")
     public ResponseEntity<Object> getAllByDistance(@PathVariable long id) {
-        UserProfile profile = profileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        UserProfile userProfile = profileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Point userLocation = userProfile.getLocation();
 
         return new ResponseEntity<>(
-                Collections.singletonMap("distance sorted", profileRepository.findAllProfilesOrderedByDistance(profile.getLocation())), HttpStatus.OK
+                Collections.singletonMap("distance sorted",
+                        profileRepository.findAllProfilesOrderedByDistance(userLocation)), HttpStatus.OK
         );
     }
+
+    @GetMapping("/{id}/distance-sorted-not-player")
+    public ResponseEntity<Object> getByDistanceAndInstruments(@PathVariable long id) {
+        UserProfile userProfile = profileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Point userLocation = userProfile.getLocation();
+        String userInstrument  = userProfile.getInstrument().toString();
+
+        return new ResponseEntity<>(
+                Collections.singletonMap("instrument and distance sorted",
+                        profileRepository.findProfilesHavingOtherInstrumentOrderedByDistance(userLocation, userInstrument)), HttpStatus.OK
+        );
+    }
+
 
     @PostMapping("/create")
     @Transactional
