@@ -1,7 +1,7 @@
 package by.krutikov.controller;
 
 import by.krutikov.domain.Account;
-import by.krutikov.dto.RegistrationDto;
+import by.krutikov.dto.AuthRequestDto;
 import by.krutikov.repository.AccountRepository;
 import by.krutikov.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,15 +49,16 @@ public class AccountController {
 
     @GetMapping("/find-by-email")
     public ResponseEntity<Object> findByEmail(@RequestParam String email) {
-        return new ResponseEntity<>(
-                Collections.singletonMap("account", accountRepository.findByEmail(email)), HttpStatus.OK
-        );
+//        return new ResponseEntity<>(
+//                Collections.singletonMap("account", accountRepository.findByEmail(email)), HttpStatus.OK
+//        );
+        return ResponseEntity.ok(Collections.singletonMap("account", accountRepository.findByEmail(email)));
     }
 
 
     @PostMapping("/create")
     @Transactional
-    public ResponseEntity<Object> createNewAccount(@RequestBody RegistrationDto body) {
+    public ResponseEntity<Object> createNewAccount(@RequestBody AuthRequestDto body) {
         Timestamp now = new Timestamp(new Date().getTime());
 
         Account account = new Account();

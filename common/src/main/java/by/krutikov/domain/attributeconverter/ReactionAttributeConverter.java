@@ -1,6 +1,6 @@
-package by.krutikov.domain.converter;
+package by.krutikov.domain.attributeconverter;
 
-import by.krutikov.domain.ReactionType;
+import by.krutikov.domain.enums.ReactionType;
 
 import javax.persistence.AttributeConverter;
 

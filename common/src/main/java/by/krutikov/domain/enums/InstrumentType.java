@@ -1,4 +1,4 @@
-package by.krutikov.domain;
+package by.krutikov.domain.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

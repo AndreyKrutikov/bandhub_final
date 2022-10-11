@@ -1,6 +1,6 @@
-package by.krutikov.domain.converter;
+package by.krutikov.domain.attributeconverter;
 
-import by.krutikov.domain.ExperienceLevel;
+import by.krutikov.domain.enums.ExperienceLevel;
 
 import javax.persistence.AttributeConverter;
 

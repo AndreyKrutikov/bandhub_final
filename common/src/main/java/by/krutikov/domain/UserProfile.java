@@ -1,15 +1,15 @@
 package by.krutikov.domain;
 
-import by.krutikov.domain.converter.ExperienceAttributeConverter;
-import by.krutikov.domain.converter.InstrumentAttributeConverter;
+import by.krutikov.domain.attributeconverter.ExperienceAttributeConverter;
+import by.krutikov.domain.attributeconverter.InstrumentAttributeConverter;
+import by.krutikov.domain.enums.ExperienceLevel;
+import by.krutikov.domain.enums.InstrumentType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Fetch;
@@ -33,7 +33,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.sql.Timestamp;
-import java.util.HashSet;
 import java.util.Set;
 
 

@@ -1,7 +1,7 @@
 package by.krutikov.controller;
 
-import by.krutikov.domain.ExperienceLevel;
-import by.krutikov.domain.InstrumentType;
+import by.krutikov.domain.enums.ExperienceLevel;
+import by.krutikov.domain.enums.InstrumentType;
 import by.krutikov.domain.UserProfile;
 import by.krutikov.dto.UserProfileDto;
 import by.krutikov.repository.AccountRepository;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
@@ -69,6 +68,9 @@ public class UserProfileController {
                         profileRepository.findProfilesHavingOtherInstrumentOrderedByDistance(userLocation, userInstrument)), HttpStatus.OK
         );
     }
+
+    ///{id1}/REACTION
+    
 
 
     @PostMapping("/create")

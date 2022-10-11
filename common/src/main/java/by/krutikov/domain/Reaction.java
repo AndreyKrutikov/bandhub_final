@@ -1,10 +1,9 @@
 package by.krutikov.domain;
 
-import by.krutikov.domain.converter.ReactionAttributeConverter;
+import by.krutikov.domain.attributeconverter.ReactionAttributeConverter;
+import by.krutikov.domain.enums.ReactionType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -45,6 +44,4 @@ public class Reaction {
 
     @Column(name = "date_modified")
     private Timestamp dateModified;
-
-
 }
