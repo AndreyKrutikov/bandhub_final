@@ -4,6 +4,7 @@ import by.krutikov.util.UUIDGenerator;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -69,6 +70,22 @@ public class DefaultExceptionHandler {
                 .e(e.getClass().toString())
                 .build();
 
-        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.NOT_FOUND);
     }
+
+  //new UsernameNotFoundException
+  @ExceptionHandler(UsernameNotFoundException.class)
+  public ResponseEntity<Object> handleUsernameNotFoundException(Exception e) {
+
+      ErrorContainer error = ErrorContainer
+              .builder()
+              .exceptionId(UUIDGenerator.generateUUID())
+              .errorCode(5)
+              .errorMessage(e.getMessage())
+              .e(e.getClass().toString())
+              .build();
+
+      return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.NOT_FOUND);
+  }
+
 }

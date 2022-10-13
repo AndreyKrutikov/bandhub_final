@@ -51,11 +51,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .httpBasic().disable()
                 .csrf().disable()
                 .exceptionHandling()
                 .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 /*For swagger access only*/
@@ -64,14 +64,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.GET, "/swagger-ui.html#").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 //.antMatchers("/**").permitAll()
-//                .antMatchers("/media/**").permitAll()
-////                .antMatchers("/registration/**").permitAll()
-////                .antMatchers("/authentication/**").permitAll()
                 .antMatchers("/login/**").permitAll()
-                .antMatchers("/profiles/**").hasAnyRole("ADMIN", "MODERATOR")
-                .antMatchers("/accounts/**").hasAnyRole("ADMIN", "MODERATOR")
-                .anyRequest()
-                .authenticated();
+                .antMatchers("/accounts/**").permitAll()
+                .antMatchers("/profiles/**").permitAll()
+                .antMatchers("/roles/**").permitAll()
+                .antMatchers("/media/**").permitAll()
+                //.antMatchers("/profiles/**").hasAnyRole("ADMIN", "MODERATOR")
+                //.antMatchers("/accounts").hasAnyRole("ADMIN", "MODERATOR")
+                .anyRequest().authenticated();
 
         // Custom JWT based authentication
 //        httpSecurity

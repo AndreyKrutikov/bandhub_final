@@ -24,7 +24,8 @@ public class AccountSecurityService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        Account userAccount = accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
+        Account userAccount = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No user registered by email " + email + " found."));
         /*We are creating Spring Security User object*/
         return new org.springframework.security.core.userdetails.User(
                 userAccount.getEmail(),

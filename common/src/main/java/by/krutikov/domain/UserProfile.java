@@ -37,8 +37,8 @@ import java.util.Set;
 
 
 @Data
-@EqualsAndHashCode(exclude = {"media", "account", "myReactions", "otherReactions"})
-@ToString(exclude = {"media", "account", "myReactions", "otherReactions"})
+@EqualsAndHashCode(exclude = {"media", "account", "myReactions", "othersReactions"})
+@ToString(exclude = {"media", "account", "myReactions", "othersReactions"})
 @Entity
 @Table(name = "user_profiles")
 public class UserProfile {
@@ -96,15 +96,15 @@ public class UserProfile {
     @Column(name = "date_modified")
     private Timestamp dateModified;
 
-    @OneToMany(mappedBy = "toProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "fromProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<Reaction> myReactions;
 
-    @OneToMany(mappedBy = "fromProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "toProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
-    private Set<Reaction> otherReactions;
+    private Set<Reaction> othersReactions;
 
     public double getLon() {
         return location.getCoordinate().getX();
