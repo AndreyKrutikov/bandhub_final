@@ -15,7 +15,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByEmail(String email);
 
     @Modifying
-    @Query(value = "insert into l_account_roles(account_id, role_id) values (:account_id, :role_id)", nativeQuery = true)
-    void createRoleRow(@Param("account_id") Long userId, @Param("role_id") Integer roleId);
+    @Query(value = "insert into bandhub.l_account_roles(account_id, role_id) values (:accountId, :roleId)", nativeQuery = true)
+    void createRoleRow(@Param("accountId") Long userId, @Param("roleId") Integer roleId);
+
+//    Account save(Account entity);
 
 }

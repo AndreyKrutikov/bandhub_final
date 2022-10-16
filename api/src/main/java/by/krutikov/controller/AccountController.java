@@ -3,12 +3,13 @@ package by.krutikov.controller;
 import by.krutikov.domain.Account;
 import by.krutikov.dto.AuthRequestDto;
 import by.krutikov.repository.AccountRepository;
-import by.krutikov.repository.RoleRepository;
+import by.krutikov.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,26 +19,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.EntityNotFoundException;
-import java.net.URI;
-import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/accounts")
 public class AccountController {
+    private final AccountService accountService;
     private final AccountRepository accountRepository;
-    private final RoleRepository roleRepository;
 
-    @GetMapping
+    @GetMapping//admin, moderator
     public ResponseEntity<Object> findAll() {
         return new ResponseEntity<>(
-                Collections.singletonMap("all accounts", accountRepository.findAll()), HttpStatus.OK
+                Collections.singletonMap("all accounts", accountService.findAll()), HttpStatus.OK
         );
     }
 
@@ -55,44 +50,40 @@ public class AccountController {
         );
     }
 
-    @PostMapping()
-    @Transactional
+    @PostMapping
+    @Transactional//all users
     public ResponseEntity<Object> createAccount(@RequestBody AuthRequestDto body) {
-        Timestamp now = new Timestamp(new Date().getTime());
-
         Account account = new Account();
-        account.setPassword(body.getPassword());
         account.setEmail(body.getEmail());
-        account.setDateCreated(now);
-        account.setDateModified(now);
-        account.setIsLocked(false);
+        account.setPassword(body.getPassword());
 
-        Account createdAccount = accountRepository.save(account);
+        account = accountService.createAccount(account);
 
-        accountRepository.createRoleRow(createdAccount.getId(), roleRepository.findById(1).get().getId());
-
-        Map<String, Object> model = new HashMap<>();
-        model.put("account created", createdAccount);
-        model.put("accounts", accountRepository.findAll());
-
-        return new ResponseEntity<>(model, HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                Collections.singletonMap("account created", account), HttpStatus.CREATED
+        );
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateAccount(@PathVariable Long id, @RequestBody  AuthRequestDto body) {
-        Timestamp now = new Timestamp(new Date().getTime());
-
-        Account currentAccount = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        currentAccount.setPassword(body.getPassword());
+    @PutMapping("/{id}")//admin//moderator//registereduser //patch better?
+    @Transactional
+    public ResponseEntity<Object> updateAccount(@PathVariable Long id,
+                                                @RequestBody AuthRequestDto body) {
+        Account currentAccount = accountService.findById(id);
         currentAccount.setEmail(body.getEmail());
-        currentAccount.setDateModified(now);
+        currentAccount.setPassword(body.getPassword());
+        currentAccount = accountService.updateAccount(currentAccount);
 
-        currentAccount = accountRepository.save(currentAccount);
+        return new ResponseEntity<>(
+                Collections.singletonMap("account updated", currentAccount), HttpStatus.OK
+        );
+    }
 
-        Map<String, Object> model = new HashMap<>();
-        model.put("account updated", currentAccount);
+    @DeleteMapping("/{id}")//admin//moderator//registereduser
+    @Transactional
+    public ResponseEntity<Object> deleteAccount(@PathVariable Long id) {
+        accountService.deleteById(id);
 
-        return new ResponseEntity<>(model, HttpStatus.OK);
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -15,8 +15,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -36,10 +39,10 @@ public class Account {
     private String password;
 
     @Column(name = "is_locked")
-    private Boolean isLocked;
+    private Boolean isLocked = Boolean.FALSE;
 
     @Column(name = "date_created")
-    private Timestamp dateCreated;
+    private  Timestamp dateCreated;
 
     @Column(name = "date_modified")
     private Timestamp dateModified;
@@ -52,4 +55,16 @@ public class Account {
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
     private UserProfile userProfile;
+
+    @PrePersist
+    protected void onCreate() {
+        this.isLocked = Boolean.FALSE;
+        this.dateCreated = new Timestamp(new Date().getTime());
+        this.dateModified = this.dateCreated;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dateModified = new Timestamp(new Date().getTime());
+    }
 }

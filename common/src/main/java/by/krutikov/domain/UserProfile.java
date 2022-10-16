@@ -30,9 +30,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
 
@@ -126,6 +129,18 @@ public class UserProfile {
 
     private void setLocation() {
         this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.dateCreated = new Timestamp(new Date().getTime());
+        this.dateModified = this.dateCreated;
+        this.isVisible = Boolean.TRUE;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dateModified = new Timestamp(new Date().getTime());
     }
 }
 

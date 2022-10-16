@@ -1,6 +1,7 @@
 package by.krutikov.controller.exceptionhandler;
 
 import by.krutikov.util.UUIDGenerator;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,6 @@ public class DefaultExceptionHandler {
 
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
 
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
@@ -73,19 +73,33 @@ public class DefaultExceptionHandler {
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.NOT_FOUND);
     }
 
-  //new UsernameNotFoundException
-  @ExceptionHandler(UsernameNotFoundException.class)
-  public ResponseEntity<Object> handleUsernameNotFoundException(Exception e) {
+    //new UsernameNotFoundException
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<Object> handleUsernameNotFoundException(Exception e) {
 
-      ErrorContainer error = ErrorContainer
-              .builder()
-              .exceptionId(UUIDGenerator.generateUUID())
-              .errorCode(5)
-              .errorMessage(e.getMessage())
-              .e(e.getClass().toString())
-              .build();
+        ErrorContainer error = ErrorContainer
+                .builder()
+                .exceptionId(UUIDGenerator.generateUUID())
+                .errorCode(5)
+                .errorMessage(e.getMessage())
+                .e(e.getClass().toString())
+                .build();
 
-      return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.NOT_FOUND);
-  }
+        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleUDataIntegrityViolationException(Exception e) {
+
+        ErrorContainer error = ErrorContainer
+                .builder()
+                .exceptionId(UUIDGenerator.generateUUID())
+                .errorCode(6)
+                .errorMessage(e.getMessage())
+                .e(e.getClass().toString())
+                .build();
+
+        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.BAD_REQUEST);
+    }
 
 }

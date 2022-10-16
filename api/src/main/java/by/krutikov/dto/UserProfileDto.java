@@ -11,6 +11,5 @@ public class UserProfileDto {
     private String phoneNumber;
     private String instrument;
     private String experienceLevel;
-    private long mediaId;
     private String description;
 }

@@ -5,7 +5,6 @@ import by.krutikov.domain.UserProfile;
 import by.krutikov.domain.enums.ReactionType;
 import by.krutikov.dto.ReactionDto;
 import by.krutikov.repository.ReactionRepository;
-import by.krutikov.repository.RoleRepository;
 import by.krutikov.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +54,7 @@ public class ReactionsController {
         UserProfile profileFrom = profileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         UserProfile profileTo = profileRepository.findById(reactionDto.getToProfileId()).orElseThrow(EntityNotFoundException::new);
 
-        Reaction reaction = new Reaction();
+        Reaction reaction = reactionRepository.findByFromProfileAndToProfile(profileFrom.getId(), profileTo.getId()).orElse(new Reaction());
         reaction.setFromProfile(profileFrom);
         reaction.setToProfile(profileTo);
         reaction.setReactionType(ReactionType.valueOf(reactionDto.getReactionType()));
@@ -76,6 +74,8 @@ public class ReactionsController {
 
         return new ResponseEntity<>(model, HttpStatus.CREATED);
     }
+
+
 
 
 }

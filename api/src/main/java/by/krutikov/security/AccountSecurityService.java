@@ -4,7 +4,6 @@ import by.krutikov.domain.Account;
 import by.krutikov.domain.Role;
 import by.krutikov.domain.enums.SystemRoles;
 import by.krutikov.repository.AccountRepository;
-import by.krutikov.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -12,15 +11,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
 public class AccountSecurityService implements UserDetailsService {
-    private final AccountRepository accountRepository;
-    private final RoleRepository roleRepository;
+    private final AccountRepository accountRepository; //todo accountService
 
     @Override
     public UserDetails loadUserByUsername(String email) {

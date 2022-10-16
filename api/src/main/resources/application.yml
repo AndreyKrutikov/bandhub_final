@@ -40,3 +40,13 @@ jwt:
 #security:
 #user:
 #password: 1111
+
+#logging:
+#  level:
+#    org.springframework: ERROR
+#    by.krutikov: DEBUG
+#  pattern:
+#    console: "%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"
+#    file: "%d %p %c{1.} [%t] %m%n"
+#  file:
+#    name: app.log
