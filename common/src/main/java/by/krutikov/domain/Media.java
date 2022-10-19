@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -36,7 +38,7 @@ public class Media {
     @Column(name = "date_modified")
     private Timestamp dateModified;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id")
     @JsonBackReference
     private UserProfile userProfile;

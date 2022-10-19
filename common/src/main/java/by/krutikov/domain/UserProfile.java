@@ -83,9 +83,9 @@ public class UserProfile {
     private ExperienceLevel experience;
 
 
-    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
-    private Media media;
+    private Set <Media> media;
 
     @Column
     private String description;
