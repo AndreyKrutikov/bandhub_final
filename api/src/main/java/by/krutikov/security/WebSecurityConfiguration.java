@@ -21,11 +21,9 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
     private final UserDetailsService userProvider;
 
     private final JwtTokenUtils tokenUtils;
-
     private final NoOpPasswordEncoder noOpPasswordEncoder;
 
     @Autowired

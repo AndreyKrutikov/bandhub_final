@@ -1,19 +1,22 @@
 package by.krutikov.controller;
 
-import by.krutikov.domain.enums.ExperienceLevel;
-import by.krutikov.domain.enums.InstrumentType;
+import by.krutikov.domain.Media;
 import by.krutikov.domain.UserProfile;
-import by.krutikov.dto.UserProfileDto;
-import by.krutikov.repository.AccountRepository;
-import by.krutikov.repository.UserProfileRepository;
+import by.krutikov.dto.request.MediaInfo;
+import by.krutikov.dto.request.UserProfileInfo;
+import by.krutikov.mappers.MediaMapper;
+import by.krutikov.mappers.UserProfileMapper;
 import by.krutikov.service.AccountService;
 import by.krutikov.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,12 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.EntityNotFoundException;
-import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,6 +32,9 @@ import java.util.Map;
 public class UserProfileController {
     private final UserProfileService profileService;
     private final AccountService accountService;
+    private final UserProfileMapper mapper;
+
+    private final MediaMapper mediaMapper;
 
     @GetMapping
     public ResponseEntity<Object> getAll() {
@@ -49,65 +50,69 @@ public class UserProfileController {
         );
     }
 
-//    @GetMapping("/{id}/distance-sorted")
-//    public ResponseEntity<Object> getAllByDistance(@PathVariable long id) {
-//        UserProfile userProfile = profileService.findById(id);
-//        Point userLocation = userProfile.getLocation();
-//
-//        return new ResponseEntity<>(
-//                Collections.singletonMap("distance sorted",
-//                        profileRepository.findAllProfilesOrderedByDistance(userLocation)), HttpStatus.OK
-//        );
-//    }
+    @GetMapping("/{id}/find-distance")
+    public ResponseEntity<Object> getAllByDistance(@PathVariable long id) {
+        UserProfile userProfile = profileService.findById(id);
+        Point userLocation = userProfile.getLocation();
 
-//    @GetMapping("/{id}/distance-sorted-not-player")
-//    public ResponseEntity<Object> getByDistanceAndInstruments(@PathVariable long id) {
-//        UserProfile userProfile = profileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-//        Point userLocation = userProfile.getLocation();
-//        String userInstrument  = userProfile.getInstrument().toString();
-//
-//        return new ResponseEntity<>(
-//                Collections.singletonMap("instrument and distance sorted",
-//                        profileRepository.findProfilesHavingOtherInstrumentOrderedByDistance(userLocation, userInstrument)), HttpStatus.OK
-//        );
-//    }
-
+        return new ResponseEntity<>(
+                Collections.singletonMap("distance sorted",
+                        profileService.findAllByDistanceTo(userLocation)), HttpStatus.OK
+        );
+    }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Object> createNewUserProfile(@RequestBody UserProfileDto body) {
-
-        UserProfile profile = new UserProfile();
-        profile.setAccount(accountService.findById(body.getAccountId()));
-        profile.setDisplayedName(body.getDisplayedName());
-        profile.setLon(body.getLon());
-        profile.setLat(body.getLat());
-        profile.setPhoneNumber(body.getPhoneNumber());
-        profile.setInstrument(InstrumentType.valueOf(body.getInstrument()));
-        profile.setExperience(ExperienceLevel.valueOf(body.getExperienceLevel()));
-        profile.setDescription(body.getDescription());
+    public ResponseEntity<Object> createNewUserProfile(@RequestBody UserProfileInfo request) {
+        UserProfile profile = mapper.map(request);
+        profile.setAccount(accountService.findById(request.getAccountId())); //todo user id from token, not from request
+        profile = profileService.createUserProfile(profile);
 
         return new ResponseEntity<>(
-                Collections.singletonMap("profile created", profileService.createUserProfile(profile)), HttpStatus.CREATED
+                Collections.singletonMap("profile created", profile), HttpStatus.CREATED
         );
     }
 
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<Object> updateUserProfile(@PathVariable Long id,
-                                                    @RequestBody UserProfileDto body) {
-
+                                                    @RequestBody UserProfileInfo updateInfo) {
         UserProfile currentProfile = profileService.findById(id);
-        currentProfile.setDisplayedName(body.getDisplayedName());
-        currentProfile.setLon(body.getLon());
-        currentProfile.setLat(body.getLat());
-        currentProfile.setPhoneNumber(body.getPhoneNumber());
-        currentProfile.setInstrument(InstrumentType.valueOf(body.getInstrument()));
-        currentProfile.setExperience(ExperienceLevel.valueOf(body.getExperienceLevel()));
-        currentProfile.setDescription(body.getDescription());
+        mapper.update(currentProfile, updateInfo);
+
+        currentProfile = profileService.updateUserProfile(currentProfile);
 
         return new ResponseEntity<>(
-                Collections.singletonMap("profile updated", profileService.updateUserProfile(currentProfile)), HttpStatus.OK
+                Collections.singletonMap("profile updated", currentProfile), HttpStatus.OK
+        );
+    }
+
+    @DeleteMapping("/{id}")//admin//moderator//registereduser
+    @Transactional
+    public ResponseEntity<Object> deleteUserProfile(@PathVariable Long id) {
+        profileService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/media")//admin//moderator//authorisedUser
+    @Transactional
+    public ResponseEntity<Object> addMedia(@PathVariable Long id,
+                                           @RequestBody MediaInfo updateInfo) {
+        UserProfile currentProfile = profileService.findById(id);
+        Media currentMedia = currentProfile.getMedia();
+
+        if (currentMedia == null) {
+            currentMedia = mediaMapper.map(updateInfo);
+        } else {
+            mediaMapper.update(currentMedia, updateInfo);
+        }
+
+        UserProfile updated = profileService.addMedia(currentProfile, currentMedia);
+
+        return new ResponseEntity<>(
+                Collections.singletonMap("media created or updated", updated),
+                HttpStatus.OK
         );
     }
 }

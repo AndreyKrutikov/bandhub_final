@@ -20,6 +20,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -39,10 +40,10 @@ public class Account {
     private String password;
 
     @Column(name = "is_locked")
-    private Boolean isLocked = Boolean.FALSE;
+    private Boolean isLocked;
 
     @Column(name = "date_created")
-    private  Timestamp dateCreated;
+    private Timestamp dateCreated;
 
     @Column(name = "date_modified")
     private Timestamp dateModified;

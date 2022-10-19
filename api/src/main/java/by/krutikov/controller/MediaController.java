@@ -2,9 +2,10 @@ package by.krutikov.controller;
 
 import by.krutikov.domain.Media;
 import by.krutikov.domain.UserProfile;
-import by.krutikov.dto.MediaRequestDto;
+import by.krutikov.dto.request.MediaRequest;
 import by.krutikov.repository.MediaRepository;
 import by.krutikov.repository.UserProfileRepository;
+import by.krutikov.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ import java.util.Date;
 @RequestMapping("/media")
 public class MediaController {
     private final MediaRepository mediaRepository;
-
+    private  final UserProfileService userProfileService;
     private final UserProfileRepository profileRepository;
 
     @GetMapping
@@ -36,24 +37,6 @@ public class MediaController {
         );
     }
 
-    @PostMapping("/{id}/create")
-    @Transactional
-    public ResponseEntity<Object> addMedia(@PathVariable Long id, @RequestBody MediaRequestDto requestDto) {
-        Timestamp now = new Timestamp(new Date().getTime());
-
-        UserProfile userProfile = profileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-
-        Media media = new Media();
-        media.setPhotoUrl(requestDto.getPhotoUrl());
-        media.setDemoUrl(requestDto.getDemoUrl());
-        media.setDateCreated(now);
-        media.setDateModified(now);
-
-        Media createdMedia = mediaRepository.save(media);
-        userProfile.setMedia(createdMedia);
-
-        return ResponseEntity.ok(Collections.singletonMap("media", createdMedia));
-    }
 
 
 //        @PostMapping("/{id}")

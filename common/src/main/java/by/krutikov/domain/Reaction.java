@@ -13,14 +13,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @Entity
 @Table(name = "reactions")
 public class Reaction {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,4 +46,15 @@ public class Reaction {
 
     @Column(name = "date_modified")
     private Timestamp dateModified;
+
+    @PrePersist
+    protected void onCreate() {
+        this.dateCreated = new Timestamp(new Date().getTime());
+        this.dateModified = this.dateCreated;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dateModified = new Timestamp(new Date().getTime());
+    }
 }

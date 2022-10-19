@@ -15,8 +15,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -25,7 +29,6 @@ import java.util.Set;
 //@ToString(exclude = "accounts")
 @Table(name = "roles")
 public class Role {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -47,4 +50,15 @@ public class Role {
     )
     @JsonIgnoreProperties("roles")
     private Set<Account> accounts;
+
+    @PrePersist
+    protected void onCreate() {
+        this.dateCreated = new Timestamp(new Date().getTime());
+        this.dateModified = this.dateCreated;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dateModified = new Timestamp(new Date().getTime());
+    }
 }

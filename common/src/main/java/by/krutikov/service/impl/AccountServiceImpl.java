@@ -1,6 +1,7 @@
 package by.krutikov.service.impl;
 
 import by.krutikov.domain.Account;
+import by.krutikov.domain.Role;
 import by.krutikov.domain.enums.SystemRoles;
 import by.krutikov.repository.AccountRepository;
 import by.krutikov.repository.RoleRepository;
@@ -9,43 +10,50 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.HashSet;
 import java.util.List;
+
+import static by.krutikov.domain.enums.SystemRoles.ROLE_ANONYMOUS;
+import static by.krutikov.domain.enums.SystemRoles.ROLE_USER;
 
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
-    private static final SystemRoles DEFAULT_ACCOUNT_ROLE = SystemRoles.ROLE_USER;
-    private static final SystemRoles DEFAULT_ANONYMOUS_ROLE = SystemRoles.ROLE_ANONYMOUS;
+    private static final SystemRoles DEFAULT_USER_ROLE = ROLE_USER;
+    private static final SystemRoles DEFAULT_ANONYMOUS_ROLE = ROLE_ANONYMOUS;
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
 
     public Account createAccount(Account account) {
-        account = accountRepository.save(account);
-        Long accountId = account.getId();
+        addRole(account, roleRepository.findRoleByRoleName(DEFAULT_USER_ROLE)
+                .orElseThrow(EntityNotFoundException::new));
+        addRole(account, roleRepository.findRoleByRoleName(DEFAULT_ANONYMOUS_ROLE)
+                .orElseThrow(EntityNotFoundException::new));
 
-        accountRepository.createRoleRow(
-                accountId,
-                roleRepository.findRoleIdByRoleName(DEFAULT_ACCOUNT_ROLE.getName())
-        );
-        accountRepository.createRoleRow(
-                accountId,
-                roleRepository.findRoleIdByRoleName(DEFAULT_ANONYMOUS_ROLE.getName())
-        );
+        return accountRepository.save(account);
+    }
 
-        return accountRepository.findById(accountId).orElseThrow(EntityNotFoundException::new);
+    @Override
+    public void addRole(Account account, Role role) {
+        if (account.getRoles() == null) {
+            account.setRoles(new HashSet<>());
+        }
+        account.getRoles().add(role);
+        role.getAccounts().add(account);
     }
 
     public Account updateAccount(Account account) {
-        //account = accountRepository.save(account);
-        //Long accountId = account.getId();
-
         return accountRepository.save(account);
-                //accountRepository.findById(accountId).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
     public void deleteById(Long id) {
         accountRepository.deleteById(id);
+    }
+
+    @Override
+    public Account findByEmail(String email) {
+        return accountRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
@@ -57,5 +65,4 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> findAll() {
         return accountRepository.findAll();
     }
-
 }

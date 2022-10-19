@@ -23,8 +23,8 @@ public class DefaultExceptionHandler {
                 .builder()
                 .exceptionId(UUIDGenerator.generateUUID())
                 .errorCode(1)
-                .errorMessage("General error")
-                .e(e.getClass().toString())
+                .errorMessage("General error " + e.getMessage())
+                .exceptionClass(e.getClass().toString())
                 .build();
 
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -38,8 +38,8 @@ public class DefaultExceptionHandler {
                 .builder()
                 .exceptionId(UUIDGenerator.generateUUID())
                 .errorCode(2)
-                .errorMessage(e.getMessage())
-                .e(e.getClass().toString())
+                .errorMessage("Empty result " + e.getMessage())
+                .exceptionClass(e.getClass().toString())
                 .build();
 
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.NOT_FOUND);
@@ -52,8 +52,8 @@ public class DefaultExceptionHandler {
                 .builder()
                 .exceptionId(UUIDGenerator.generateUUID())
                 .errorCode(3)
-                .errorMessage("Missing request parameters")
-                .e(e.getClass().toString())
+                .errorMessage("Missing request parameters " + e.getMessage())
+                .exceptionClass(e.getClass().toString())
                 .build();
 
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.BAD_REQUEST);
@@ -66,8 +66,8 @@ public class DefaultExceptionHandler {
                 .builder()
                 .exceptionId(UUIDGenerator.generateUUID())
                 .errorCode(4)
-                .errorMessage("No entity found")
-                .e(e.getClass().toString())
+                .errorMessage("No entity found " + e.getMessage())
+                .exceptionClass(e.getClass().toString())
                 .build();
 
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.NOT_FOUND);
@@ -81,8 +81,8 @@ public class DefaultExceptionHandler {
                 .builder()
                 .exceptionId(UUIDGenerator.generateUUID())
                 .errorCode(5)
-                .errorMessage(e.getMessage())
-                .e(e.getClass().toString())
+                .errorMessage("Username not found " + e.getMessage())
+                .exceptionClass(e.getClass().toString())
                 .build();
 
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.NOT_FOUND);
@@ -95,11 +95,10 @@ public class DefaultExceptionHandler {
                 .builder()
                 .exceptionId(UUIDGenerator.generateUUID())
                 .errorCode(6)
-                .errorMessage(e.getMessage())
-                .e(e.getClass().toString())
+                .errorMessage("Object already exists: " + e.getMessage())
+                .exceptionClass(e.getClass().toString())
                 .build();
 
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.BAD_REQUEST);
     }
-
 }

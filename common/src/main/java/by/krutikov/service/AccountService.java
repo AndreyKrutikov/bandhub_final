@@ -1,6 +1,7 @@
 package by.krutikov.service;
 
 import by.krutikov.domain.Account;
+import by.krutikov.domain.Role;
 
 import java.util.List;
 
@@ -13,5 +14,9 @@ public interface AccountService {
 
     List<Account> findAll();
 
-    void deleteById(Long aLong);
+    void deleteById(Long id);
+
+    Account findByEmail(String email);
+
+    void addRole (Account account, Role role);
 }

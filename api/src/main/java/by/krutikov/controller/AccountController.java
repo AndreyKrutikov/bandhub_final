@@ -1,8 +1,9 @@
 package by.krutikov.controller;
 
 import by.krutikov.domain.Account;
-import by.krutikov.dto.AuthRequestDto;
-import by.krutikov.repository.AccountRepository;
+import by.krutikov.dto.request.AccountInfo;
+import by.krutikov.dto.response.CreateAccountResponse;
+import by.krutikov.mappers.AccountMapper;
 import by.krutikov.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ import java.util.Collections;
 @RequestMapping("/accounts")
 public class AccountController {
     private final AccountService accountService;
-    private final AccountRepository accountRepository;
+    private final AccountMapper mapper;
 
     @GetMapping//admin, moderator
     public ResponseEntity<Object> findAll() {
@@ -39,39 +40,40 @@ public class AccountController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable Long id) {
         return new ResponseEntity<>(
-                Collections.singletonMap("account", accountRepository.findById(id)), HttpStatus.OK
+                Collections.singletonMap("account", accountService.findById(id)), HttpStatus.OK
         );
     }
 
-    @GetMapping("/find-by-email")
+    @GetMapping("/find-by-email")// method like this exists in security controller
     public ResponseEntity<Object> findByEmail(@RequestParam String email) {
         return new ResponseEntity<>(
-                Collections.singletonMap("account", accountRepository.findByEmail(email)), HttpStatus.OK
+                Collections.singletonMap("account", accountService.findByEmail(email)), HttpStatus.OK
         );
     }
 
     @PostMapping
     @Transactional//all users
-    public ResponseEntity<Object> createAccount(@RequestBody AuthRequestDto body) {
-        Account account = new Account();
-        account.setEmail(body.getEmail());
-        account.setPassword(body.getPassword());
-
+    public ResponseEntity<Object> createAccount(@RequestBody AccountInfo createInfo) {
+        Account account = mapper.map(createInfo);
         account = accountService.createAccount(account);
 
+        CreateAccountResponse response = mapper.map(account);
+
         return new ResponseEntity<>(
-                Collections.singletonMap("account created", account), HttpStatus.CREATED
+                Collections.singletonMap("account created", response), HttpStatus.CREATED
         );
     }
 
     @PutMapping("/{id}")//admin//moderator//registereduser //patch better?
     @Transactional
     public ResponseEntity<Object> updateAccount(@PathVariable Long id,
-                                                @RequestBody AuthRequestDto body) {
+                                                @RequestBody AccountInfo updateInfo) {
         Account currentAccount = accountService.findById(id);
-        currentAccount.setEmail(body.getEmail());
-        currentAccount.setPassword(body.getPassword());
+        mapper.update(currentAccount, updateInfo);
+
         currentAccount = accountService.updateAccount(currentAccount);
+
+        //think whether to return account or account response
 
         return new ResponseEntity<>(
                 Collections.singletonMap("account updated", currentAccount), HttpStatus.OK

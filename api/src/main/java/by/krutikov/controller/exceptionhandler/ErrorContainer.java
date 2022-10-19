@@ -11,15 +11,11 @@ import lombok.Setter;
 
 @Builder
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+//@AllArgsConstructor
+//@NoArgsConstructor
 public class ErrorContainer {
-
     private String exceptionId;
-
     private String errorMessage;
-
     private int errorCode;
-
-    private String e;
+    private String exceptionClass;
 }

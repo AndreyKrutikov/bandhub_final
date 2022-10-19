@@ -16,7 +16,6 @@ import java.util.Collections;
 @RequestMapping("/roles")
 @RequiredArgsConstructor
 public class RoleController {
-
     private final RoleRepository roleRepository;
 
     @GetMapping
@@ -32,6 +31,4 @@ public class RoleController {
                 Collections.singletonMap("all roles by account id", roleRepository.findRolesByAccountId(id)), HttpStatus.OK
         );
     }
-
-
 }

@@ -28,7 +28,7 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
                     "from bandhub.user_profiles up order by distance",
             nativeQuery = true
     )
-    List<UserProfile> findAllProfilesOrderedByDistance(@Param("userLocation") Point userLocation);
+    List<UserProfile> findAllByDistanceTo(@Param("userLocation") Point userLocation);
 
     @Query(
             value = "select up.id, " +
@@ -50,5 +50,6 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
     )
     List<UserProfile> findProfilesHavingOtherInstrumentOrderedByDistance(@Param("userLocation") Point userLocation,
                                                                          @Param("instrumentType") String instrumentType);
+
 
 }

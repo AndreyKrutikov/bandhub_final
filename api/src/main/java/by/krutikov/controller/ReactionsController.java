@@ -3,7 +3,7 @@ package by.krutikov.controller;
 import by.krutikov.domain.Reaction;
 import by.krutikov.domain.UserProfile;
 import by.krutikov.domain.enums.ReactionType;
-import by.krutikov.dto.ReactionDto;
+import by.krutikov.dto.request.PostReactionRequest;
 import by.krutikov.repository.ReactionRepository;
 import by.krutikov.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class ReactionsController {
 
     @PostMapping()
     @Transactional
-    public ResponseEntity<Object> putReaction(@PathVariable Long id, @RequestBody ReactionDto reactionDto) {
+    public ResponseEntity<Object> putReaction(@PathVariable Long id, @RequestBody PostReactionRequest reactionDto) {
         Timestamp now = new Timestamp(new Date().getTime());
         UserProfile profileFrom = profileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         UserProfile profileTo = profileRepository.findById(reactionDto.getToProfileId()).orElseThrow(EntityNotFoundException::new);

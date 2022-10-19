@@ -1,7 +1,7 @@
 package by.krutikov.controller;
 
-import by.krutikov.dto.AuthRequestDto;
-import by.krutikov.dto.AuthResponseDto;
+import by.krutikov.dto.request.AccountInfo;
+import by.krutikov.dto.response.AuthResponse;
 import by.krutikov.security.jwt.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ public class AuthenticationController {
 //            @ApiResponse(code = 500, message = "Server error")
 //    })
     @PostMapping
-    public ResponseEntity<AuthResponseDto> loginUser(@RequestBody AuthRequestDto request) {
+    public ResponseEntity<AuthResponse> loginUser(@RequestBody AccountInfo request) {
 
         /*Check login and password*/
         Authentication authenticate = authenticationManager.authenticate(
@@ -43,7 +43,7 @@ public class AuthenticationController {
 
         /*Generate token with answer to user*/
         return ResponseEntity.ok(
-                AuthResponseDto
+                AuthResponse
                         .builder()
                         .email(request.getEmail())
                         .token(tokenUtils.generateToken(userProvider.loadUserByUsername(request.getEmail())))

@@ -1,9 +1,9 @@
-package by.krutikov.dto;
+package by.krutikov.dto.request;
 
 import lombok.Data;
 
 @Data
-public class ReactionDto {
+public class PostReactionRequest {
     private Long toProfileId;
     private String reactionType;
 }

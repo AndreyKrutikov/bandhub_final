@@ -1,9 +1,9 @@
-package by.krutikov.dto;
+package by.krutikov.dto.request;
 
 import lombok.Data;
 
 @Data
-public class AuthRequestDto {
+public class AuthRequest {
     private String email;
     private String password;
 }

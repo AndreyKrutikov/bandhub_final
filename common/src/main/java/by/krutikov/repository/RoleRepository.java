@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Integer> {
@@ -28,4 +29,6 @@ public interface RoleRepository extends JpaRepository<Role, Integer> {
             nativeQuery = true
     )
     Integer findRoleIdByRoleName(@Param("roleName") String roleName);
+
+    Optional<Role> findRoleByRoleName(SystemRoles roleName);
 }

@@ -1,10 +1,10 @@
-package by.krutikov.dto;
+package by.krutikov.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
 @Data
 @Builder
-public class AuthResponseDto {
+public class AuthResponse {
     private String email;
     private String token;
 }
