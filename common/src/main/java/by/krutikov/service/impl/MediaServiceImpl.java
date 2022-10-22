@@ -1,9 +1,7 @@
 package by.krutikov.service.impl;
 
 import by.krutikov.domain.Media;
-import by.krutikov.domain.UserProfile;
 import by.krutikov.repository.MediaRepository;
-import by.krutikov.repository.UserProfileRepository;
 import by.krutikov.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,17 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MediaServiceImpl implements MediaService {
     private final MediaRepository mediaRepository;
-    private final UserProfileRepository profileRepository;
-
 
     @Override
     public Media createMedia(Media media) {
         return mediaRepository.save(media);
-    }
-
-    public void addProfile(Media media, UserProfile userProfile) {
-        userProfile.setMedia(media);
-        media.setUserProfile(userProfile);
     }
 
     @Override
@@ -44,12 +35,12 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        mediaRepository.deleteById(id);
+    public List<Media> findAllByUserProfileId(Long id) {
+        return mediaRepository.findAllByUserProfileId(id);
     }
 
     @Override
-    public void addMedia() {
-
+    public void deleteById(Long id) {
+        mediaRepository.deleteById(id);
     }
 }

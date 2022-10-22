@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
-public class AccountSecurityService implements UserDetailsService {
+public class UserDetailsProvider implements UserDetailsService {
     private final AccountRepository accountRepository; //todo accountService
 
     @Override

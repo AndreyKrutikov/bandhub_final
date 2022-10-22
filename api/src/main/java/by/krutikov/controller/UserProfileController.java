@@ -1,8 +1,6 @@
 package by.krutikov.controller;
 
-import by.krutikov.domain.Media;
 import by.krutikov.domain.UserProfile;
-import by.krutikov.dto.request.MediaInfo;
 import by.krutikov.dto.request.UserProfileInfo;
 import by.krutikov.mappers.MediaMapper;
 import by.krutikov.mappers.UserProfileMapper;
@@ -10,13 +8,11 @@ import by.krutikov.service.AccountService;
 import by.krutikov.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -33,8 +29,6 @@ public class UserProfileController {
     private final UserProfileService profileService;
     private final AccountService accountService;
     private final UserProfileMapper mapper;
-
-    private final MediaMapper mediaMapper;
 
     @GetMapping
     public ResponseEntity<Object> getAll() {
@@ -93,26 +87,5 @@ public class UserProfileController {
         profileService.deleteById(id);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}/media")//admin//moderator//authorisedUser
-    @Transactional
-    public ResponseEntity<Object> addMedia(@PathVariable Long id,
-                                           @RequestBody MediaInfo updateInfo) {
-        UserProfile currentProfile = profileService.findById(id);
-        Media currentMedia = currentProfile.getMedia();
-
-        if (currentMedia == null) {
-            currentMedia = mediaMapper.map(updateInfo);
-        } else {
-            mediaMapper.update(currentMedia, updateInfo);
-        }
-
-        UserProfile updated = profileService.addMedia(currentProfile, currentMedia);
-
-        return new ResponseEntity<>(
-                Collections.singletonMap("media created or updated", updated),
-                HttpStatus.OK
-        );
     }
 }

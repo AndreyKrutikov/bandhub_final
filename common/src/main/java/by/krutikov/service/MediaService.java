@@ -13,7 +13,7 @@ public interface MediaService {
 
     List<Media> findAll();
 
-    void deleteById(Long id);
+    List<Media> findAllByUserProfileId(Long id);
 
-    void addMedia();
+    void deleteById(Long id);
 }

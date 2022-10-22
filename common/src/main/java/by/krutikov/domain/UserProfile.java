@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.Fetch;
@@ -30,6 +31,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -68,8 +70,8 @@ public class UserProfile {
 
     @JsonIgnore
     //@Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private Point location;// = geometryFactory.createPoint(new Coordinate(lon, lat));
+    //@Setter(AccessLevel.NONE)
+    private Point location = geometryFactory.createPoint(new Coordinate(lon, lat));
 
     @Column(name = "cell_phone_number")
     private String phoneNumber;
@@ -81,7 +83,6 @@ public class UserProfile {
     @Column(name = "experience_id")
     @Convert(converter = ExperienceAttributeConverter.class)
     private ExperienceLevel experience;
-
 
     @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
@@ -100,12 +101,12 @@ public class UserProfile {
     private Timestamp dateModified;
 
     @OneToMany(mappedBy = "fromProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @Fetch(value = FetchMode.SELECT)
+//    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<Reaction> myReactions;
 
     @OneToMany(mappedBy = "toProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @Fetch(value = FetchMode.SELECT)
+//    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<Reaction> othersReactions;
 
@@ -136,11 +137,19 @@ public class UserProfile {
         this.dateCreated = new Timestamp(new Date().getTime());
         this.dateModified = this.dateCreated;
         this.isVisible = Boolean.TRUE;
+        //this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.dateModified = new Timestamp(new Date().getTime());
+      //  this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
     }
+
+//    @PostLoad
+//    protected void onRead(){
+//        this.lon = location.getCoordinate().getX();
+//        this.lat = location.getCoordinate().getY();
+//    }
 }
 

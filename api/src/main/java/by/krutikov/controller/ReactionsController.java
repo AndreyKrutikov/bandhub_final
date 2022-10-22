@@ -4,6 +4,7 @@ import by.krutikov.domain.Reaction;
 import by.krutikov.domain.UserProfile;
 import by.krutikov.domain.enums.ReactionType;
 import by.krutikov.dto.request.PostReactionRequest;
+import by.krutikov.mappers.ReactionMapper;
 import by.krutikov.repository.ReactionRepository;
 import by.krutikov.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +33,7 @@ public class ReactionsController {
 
     private final UserProfileRepository profileRepository;
     private final ReactionRepository reactionRepository;
+    private final ReactionMapper mapper;
 
 
     @GetMapping
@@ -46,36 +49,4 @@ public class ReactionsController {
 
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
-
-    @PostMapping()
-    @Transactional
-    public ResponseEntity<Object> putReaction(@PathVariable Long id, @RequestBody PostReactionRequest reactionDto) {
-        Timestamp now = new Timestamp(new Date().getTime());
-        UserProfile profileFrom = profileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        UserProfile profileTo = profileRepository.findById(reactionDto.getToProfileId()).orElseThrow(EntityNotFoundException::new);
-
-        Reaction reaction = reactionRepository.findByFromProfileAndToProfile(profileFrom.getId(), profileTo.getId()).orElse(new Reaction());
-        reaction.setFromProfile(profileFrom);
-        reaction.setToProfile(profileTo);
-        reaction.setReactionType(ReactionType.valueOf(reactionDto.getReactionType()));
-        reaction.setDateCreated(now);
-        reaction.setDateModified(now);
-
-        reaction = reactionRepository.save(reaction);
-
-
-        Set<Reaction> myReactions = profileFrom.getMyReactions();
-        myReactions.add(reaction);
-        Set<Reaction> othersReactions = profileTo.getOthersReactions();
-
-        Map<String, Object> model = new LinkedHashMap<>();
-        model.put("my reactions", myReactions);
-        model.put("others reactions", othersReactions);
-
-        return new ResponseEntity<>(model, HttpStatus.CREATED);
-    }
-
-
-
-
 }

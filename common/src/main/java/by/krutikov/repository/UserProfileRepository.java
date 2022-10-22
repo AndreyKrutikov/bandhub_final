@@ -13,7 +13,6 @@ import java.util.List;
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
     @Query(
             value = "select up.id, " +
-                    "up.media_id, " +
                     "up.is_visible, " +
                     "up.instrument_id, " +
                     "up.experience_id, " +
@@ -32,7 +31,6 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
 
     @Query(
             value = "select up.id, " +
-                    "up.media_id, " +
                     "up.is_visible, " +
                     "up.instrument_id, " +
                     "up.experience_id, " +

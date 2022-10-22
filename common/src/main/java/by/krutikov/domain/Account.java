@@ -20,7 +20,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -48,8 +47,8 @@ public class Account {
     @Column(name = "date_modified")
     private Timestamp dateModified;
 
-    @ManyToMany(mappedBy = "accounts", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    //@JsonManagedReference
+    @ManyToMany(mappedBy = "accounts", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JsonManagedReference
     @JsonIgnoreProperties("accounts")
     private Set<Role> roles;
 

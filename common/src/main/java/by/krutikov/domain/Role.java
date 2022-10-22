@@ -1,14 +1,15 @@
 package by.krutikov.domain;
 
 import by.krutikov.domain.enums.SystemRoles;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,13 +21,12 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @Entity
-//@EqualsAndHashCode(exclude = "accounts")
-//@ToString(exclude = "accounts")
+@EqualsAndHashCode(exclude = "accounts")
+@ToString(exclude = "accounts")
 @Table(name = "roles")
 public class Role {
     @Id
@@ -43,12 +43,12 @@ public class Role {
     @Column(name = "date_modified")
     private Timestamp dateModified;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "l_account_roles",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "account_id")
     )
-    @JsonIgnoreProperties("roles")
+    @JsonBackReference
     private Set<Account> accounts;
 
     @PrePersist

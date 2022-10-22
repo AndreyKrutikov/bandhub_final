@@ -73,8 +73,6 @@ public class AccountController {
 
         currentAccount = accountService.updateAccount(currentAccount);
 
-        //think whether to return account or account response
-
         return new ResponseEntity<>(
                 Collections.singletonMap("account updated", currentAccount), HttpStatus.OK
         );

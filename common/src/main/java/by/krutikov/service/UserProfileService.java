@@ -18,6 +18,4 @@ public interface UserProfileService {
     List<UserProfile> findAll();
 
     List<UserProfile> findAllByDistanceTo(Point userLocation);
-
-    UserProfile addMedia(UserProfile profile, Media media);
 }

@@ -39,7 +39,7 @@ public class Media {
     private Timestamp dateModified;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_profile_id")
     @JsonBackReference
     private UserProfile userProfile;
 
