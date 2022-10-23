@@ -19,14 +19,14 @@ public class RoleController {
     private final RoleRepository roleRepository;
 
     @GetMapping
-    public ResponseEntity<Object> getAll() {
+    public ResponseEntity<Object> getAllRoles() {
         return new ResponseEntity<>(
                 Collections.singletonMap("all roles", roleRepository.findAll()), HttpStatus.OK
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getAllByAccountId(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Object> getRolesByAccountId(@PathVariable(value = "id") Long id) {
         return new ResponseEntity<>(
                 Collections.singletonMap("all roles by account id", roleRepository.findRolesByAccountId(id)), HttpStatus.OK
         );

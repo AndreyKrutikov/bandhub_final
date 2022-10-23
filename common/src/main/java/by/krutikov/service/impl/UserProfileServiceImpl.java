@@ -2,7 +2,6 @@ package by.krutikov.service.impl;
 
 import by.krutikov.domain.UserProfile;
 import by.krutikov.repository.UserProfileRepository;
-import by.krutikov.service.MediaService;
 import by.krutikov.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;

@@ -67,6 +67,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/profiles/**").permitAll()
                 .antMatchers("/roles/**").permitAll()
                 .antMatchers("/media/**").permitAll()
+                .antMatchers("/reactions/**").permitAll()
                 //.antMatchers("/profiles/**").hasAnyRole("ADMIN", "MODERATOR")
                 //.antMatchers("/accounts").hasAnyRole("ADMIN", "MODERATOR")
                 .anyRequest().authenticated();

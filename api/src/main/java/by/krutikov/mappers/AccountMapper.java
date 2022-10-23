@@ -9,7 +9,6 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper(componentModel = "spring")
-
 public interface AccountMapper {
     Account map(AccountInfo request);
 

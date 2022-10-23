@@ -71,7 +71,8 @@ public class UserProfile {
     @JsonIgnore
     //@Getter(AccessLevel.NONE)
     //@Setter(AccessLevel.NONE)
-    private Point location = geometryFactory.createPoint(new Coordinate(lon, lat));
+    //point is not serializable by json
+    private Point location;// = geometryFactory.createPoint(new Coordinate(lon, lat));
 
     @Column(name = "cell_phone_number")
     private String phoneNumber;
@@ -109,47 +110,47 @@ public class UserProfile {
 //    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<Reaction> othersReactions;
-
-    public double getLon() {
-        return location.getCoordinate().getX();
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
-        this.setLocation();
-    }
-
-    public double getLat() {
-        return location.getCoordinate().getY();
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-        this.setLocation();
-    }
-
-    private void setLocation() {
-        this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
-    }
+//
+//    public double getLon() {
+//        return location.getCoordinate().getX();
+//    }
+//
+//    public void setLon(double lon) {
+//        this.lon = lon;
+//        this.setLocation();
+//    }
+//
+//    public double getLat() {
+//        return location.getCoordinate().getY();
+//    }
+//
+//    public void setLat(double lat) {
+//        this.lat = lat;
+//        this.setLocation();
+//    }
+//
+//    private void setLocation() {
+//        this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
+//    }
 
     @PrePersist
     protected void onCreate() {
         this.dateCreated = new Timestamp(new Date().getTime());
         this.dateModified = this.dateCreated;
         this.isVisible = Boolean.TRUE;
-        //this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
+        this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.dateModified = new Timestamp(new Date().getTime());
-      //  this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
+        this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
     }
 
-//    @PostLoad
-//    protected void onRead(){
-//        this.lon = location.getCoordinate().getX();
-//        this.lat = location.getCoordinate().getY();
-//    }
+    @PostLoad
+    protected void onRead(){
+        this.lon = location.getCoordinate().getX();
+        this.lat = location.getCoordinate().getY();
+    }
 }
 
