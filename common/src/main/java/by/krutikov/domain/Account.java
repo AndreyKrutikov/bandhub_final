@@ -22,6 +22,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
 
+import static java.lang.Boolean.FALSE;
+
 @Data
 @EqualsAndHashCode(exclude = {"roles", "userProfile"})
 @ToString(exclude = {"roles", "userProfile"})
@@ -58,9 +60,9 @@ public class Account {
 
     @PrePersist
     protected void onCreate() {
-        this.isLocked = Boolean.FALSE;
+        this.isLocked = FALSE;
         this.dateCreated = new Timestamp(new Date().getTime());
-        this.dateModified = this.dateCreated;
+        this.dateModified = dateCreated;
     }
 
     @PreUpdate

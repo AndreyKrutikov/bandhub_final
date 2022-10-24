@@ -24,22 +24,22 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/reactions/{id}")  //profiles/{id}/reactions ??? this.id = userprofileIdv //profiles/7/reactions
+@RequestMapping("/reactions/{thisId}")  //profiles/{id}/reactions ??? this.id = userprofileIdv //profiles/7/reactions
 @RequiredArgsConstructor
 public class ReactionsController {
     private final UserProfileService profileService;
     private final ReactionService reactionService;
     private final ReactionMapper mapper;
 
-    @GetMapping
-    public ResponseEntity<Object> getAllUserReactions(@PathVariable Long id) {
-        UserProfile profile = profileService.findById(id);
+    @GetMapping//all users
+    public ResponseEntity<Object> getAllProfileReactions(@PathVariable Long thisId) {
+        UserProfile profile = profileService.findById(thisId);
 
         Set<Reaction> myReactions = profile.getMyReactions();
         Set<Reaction> othersReactions = profile.getOthersReactions();
 
         Map<String, Object> model = new LinkedHashMap<>();
-        model.put("profile id", id);
+        model.put("profile id", thisId);
         model.put("my reactions", myReactions);
         model.put("others reactions", othersReactions);
 
@@ -47,32 +47,32 @@ public class ReactionsController {
     }
 
     @PostMapping
-    @Transactional
-    public ResponseEntity<Object> postReaction(@PathVariable Long id,
+    @Transactional//admin, registered user
+    public ResponseEntity<Object> postReaction(@PathVariable Long thisId,
                                                @RequestBody PostReactionRequest request) {
         Reaction reaction = mapper.map(request);
-        Long toId = reaction.getToProfile().getId();
+        Long idLiked = reaction.getToProfile().getId();
 
-        reactionService.deleteByFromProfileIdAndToProfileId(id, toId);
+        reactionService.deleteByFromProfileIdAndToProfileId(thisId, idLiked);
 
-        UserProfile profileFrom = profileService.findById(id);
+        UserProfile profileFrom = profileService.findById(thisId);
         reaction.setFromProfile(profileFrom);
 
         reaction = reactionService.createReaction(reaction);
 
         Map<String, Object> model = new LinkedHashMap<>();
-        model.put("new reaction from account id", id);
-        model.put("to profile id", toId);
+        model.put("new reaction from profile id", thisId);
+        model.put("to profile id", idLiked);
         model.put("reaction", reaction);
 
         return new ResponseEntity<>(model, HttpStatus.CREATED);
     }
 
     @DeleteMapping
-    @Transactional
-    public ResponseEntity<Object> deleteReaction(@PathVariable Long id,
+    @Transactional//admin, registered
+    public ResponseEntity<Object> deleteReaction(@PathVariable Long thisId,
                                                  @RequestParam Long idLiked) {
-        reactionService.deleteByFromProfileIdAndToProfileId(id, idLiked);
+        reactionService.deleteByFromProfileIdAndToProfileId(thisId, idLiked);
 
         return ResponseEntity.noContent().build();
     }

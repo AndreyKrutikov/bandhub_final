@@ -7,14 +7,9 @@ import by.krutikov.domain.enums.InstrumentType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -39,6 +34,9 @@ import javax.persistence.Transient;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 
 @Data
@@ -72,7 +70,7 @@ public class UserProfile {
     //@Getter(AccessLevel.NONE)
     //@Setter(AccessLevel.NONE)
     //point is not serializable by json
-    private Point location;// = geometryFactory.createPoint(new Coordinate(lon, lat));
+    private Point location;
 
     @Column(name = "cell_phone_number")
     private String phoneNumber;
@@ -87,7 +85,7 @@ public class UserProfile {
 
     @OneToMany(mappedBy = "userProfile", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JsonManagedReference
-    private Set <Media> media;
+    private Set<Media> media;
 
     @Column
     private String description;
@@ -110,45 +108,25 @@ public class UserProfile {
 //    @Fetch(value = FetchMode.SELECT)
     @JsonManagedReference
     private Set<Reaction> othersReactions;
-//
-//    public double getLon() {
-//        return location.getCoordinate().getX();
-//    }
-//
-//    public void setLon(double lon) {
-//        this.lon = lon;
-//        this.setLocation();
-//    }
-//
-//    public double getLat() {
-//        return location.getCoordinate().getY();
-//    }
-//
-//    public void setLat(double lat) {
-//        this.lat = lat;
-//        this.setLocation();
-//    }
-//
-//    private void setLocation() {
-//        this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
-//    }
 
     @PrePersist
     protected void onCreate() {
         this.dateCreated = new Timestamp(new Date().getTime());
-        this.dateModified = this.dateCreated;
-        this.isVisible = Boolean.TRUE;
+        this.dateModified = dateCreated;
+        this.isVisible = FALSE;
         this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.dateModified = new Timestamp(new Date().getTime());
+        this.isVisible = media.isEmpty() ? FALSE : TRUE;
         this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
     }
 
     @PostLoad
-    protected void onRead(){
+    protected void onRead() {
+        this.isVisible = media.isEmpty() ? FALSE : TRUE;
         this.lon = location.getCoordinate().getX();
         this.lat = location.getCoordinate().getY();
     }

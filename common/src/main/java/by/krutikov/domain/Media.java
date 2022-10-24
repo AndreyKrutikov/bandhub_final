@@ -46,7 +46,7 @@ public class Media {
     @PrePersist
     protected void onCreate() {
         this.dateCreated = new Timestamp(new Date().getTime());
-        this.dateModified = this.dateCreated;
+        this.dateModified = dateCreated;
     }
 
     @PreUpdate

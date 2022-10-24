@@ -50,3 +50,7 @@ logging:
     file: "%d %p %c{1.} [%t] %m%n"
   file:
     name: app.log
+
+#springdoc:
+#  api-docs:
+#    path: /api-docs

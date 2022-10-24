@@ -33,6 +33,7 @@
         <jwt.version>0.9.1</jwt.version>
         <mapstruct.version>1.5.3.Final</mapstruct.version>
         <lombok.version>1.18.24</lombok.version>
+        <springdoc.version>1.6.11</springdoc.version>
     </properties>
 
     <dependencies>
@@ -150,17 +151,13 @@
             <version>${mapstruct.version}</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc.version}</version>
+        </dependency>
 
-    <!--    <build>-->
-    <!--        <plugins>-->
-    <!--            <plugin>-->
-    <!--                <groupId>org.apache.maven.plugins</groupId>-->
-    <!--                <artifactId>maven-compiler-plugin</artifactId>-->
-    <!--                <version>3.8.1</version>-->
-    <!--            </plugin>-->
-    <!--        </plugins>-->
-    <!--    </build>-->
+    </dependencies>
 
     <build>
         <plugins>
