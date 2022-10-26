@@ -1,8 +1,7 @@
 package by.krutikov.controller;
 
 import by.krutikov.domain.UserProfile;
-import by.krutikov.dto.request.UserProfileInfo;
-import by.krutikov.mappers.MediaMapper;
+import by.krutikov.dto.request.UserProfileDetails;
 import by.krutikov.mappers.UserProfileMapper;
 import by.krutikov.service.AccountService;
 import by.krutikov.service.UserProfileService;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Collections;
 
 @RequiredArgsConstructor
@@ -33,14 +33,14 @@ public class UserProfileController {
     @GetMapping
     public ResponseEntity<Object> getAll() {
         return new ResponseEntity<>(
-                Collections.singletonMap("all profiles", profileService.findAll()), HttpStatus.OK
+                Collections.singletonMap("all profiles", mapper.toResponseList(profileService.findAll())), HttpStatus.OK
         );
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getById(@PathVariable long id) {
         return new ResponseEntity<>(
-                Collections.singletonMap("found by id", profileService.findById(id)), HttpStatus.OK
+                Collections.singletonMap("found by id", mapper.map(profileService.findById(id))), HttpStatus.OK
         );
     }
 
@@ -51,33 +51,33 @@ public class UserProfileController {
 
         return new ResponseEntity<>(
                 Collections.singletonMap("distance sorted",
-                        profileService.findAllByDistanceTo(userLocation)), HttpStatus.OK
+                        mapper.toResponseList(profileService.findAllByDistanceTo(userLocation))), HttpStatus.OK
         );
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Object> createNewUserProfile(@RequestBody UserProfileInfo request) {
+    public ResponseEntity<Object> createNewUserProfile(@Valid @RequestBody UserProfileDetails request) {
         UserProfile profile = mapper.map(request);
-        profile.setAccount(accountService.findById(request.getAccountId())); //todo user id from token, not from request
+        profile.setAccount(accountService.findById(request.getAccountId()));
         profile = profileService.createUserProfile(profile);
 
         return new ResponseEntity<>(
-                Collections.singletonMap("profile created", profile), HttpStatus.CREATED
+                Collections.singletonMap("profile created", mapper.map(profile)), HttpStatus.CREATED
         );
     }
 
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<Object> updateUserProfile(@PathVariable Long id,
-                                                    @RequestBody UserProfileInfo updateInfo) {
+                                                    @Valid @RequestBody UserProfileDetails updateInfo) {
         UserProfile currentProfile = profileService.findById(id);
         mapper.update(currentProfile, updateInfo);
 
         currentProfile = profileService.updateUserProfile(currentProfile);
 
         return new ResponseEntity<>(
-                Collections.singletonMap("profile updated", currentProfile), HttpStatus.OK
+                Collections.singletonMap("profile updated", mapper.map(currentProfile)), HttpStatus.OK
         );
     }
 

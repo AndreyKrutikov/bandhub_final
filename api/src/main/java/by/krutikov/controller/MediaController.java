@@ -2,10 +2,11 @@ package by.krutikov.controller;
 
 import by.krutikov.domain.Media;
 import by.krutikov.domain.UserProfile;
-import by.krutikov.dto.request.MediaInfo;
+import by.krutikov.dto.request.MediaDetails;
 import by.krutikov.mappers.MediaMapper;
 import by.krutikov.service.MediaService;
 import by.krutikov.service.UserProfileService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,14 @@ public class MediaController {
     private final UserProfileService profileService;
     private final MediaMapper mapper;
 
+    @Operation(summary = "Get all media",
+            description = "Get all media, admin/moderator use only",
+            parameters = {
+            })
+//    @Params({
+//            @ApiImplicitParam(name = "X-Auth-Token", defaultValue = "token", required = true, paramType = "header", dataType = "string"),
+//            @ApiImplicitParam(name = "query", defaultValue = "query", required = false, paramType = "query", dataType = "string")
+//    }))
     @GetMapping
     public ResponseEntity<Object> getAll() {
         return new ResponseEntity<>(
@@ -38,6 +47,10 @@ public class MediaController {
         );
     }
 
+    @Operation(summary = "Get media by id",
+            description = "Get media by id, admin/moderator use only",
+            parameters = {
+            })
     @GetMapping("/by-profile-id")
     public ResponseEntity<Object> getAllByProfileId(@RequestParam(name = "profileId") Long id) {
         return new ResponseEntity<>(
@@ -45,10 +58,13 @@ public class MediaController {
                 HttpStatus.OK
         );
     }
-
+    @Operation(summary = "Create new media",
+            description = "Add new media to user profile available for logged-in user",
+            parameters = {
+            })
     @PostMapping
     @Transactional
-    public ResponseEntity<Object> createMedia(@RequestBody MediaInfo createInfo) {
+    public ResponseEntity<Object> createMedia(@RequestBody MediaDetails createInfo) {
         Media media = mapper.map(createInfo);
         media.getUserProfile().getMedia().add(media);
 
@@ -59,10 +75,14 @@ public class MediaController {
         );
     }
 
+    @Operation(summary = "Update media by media id",
+            description = "Update user profile media, available for logged-in user",
+            parameters = {
+            })
     @PutMapping("/{id}")
     @Transactional//all users
     public ResponseEntity<Object> updateMedia(@PathVariable Long id,
-                                              @RequestBody MediaInfo updateInfo) {
+                                              @RequestBody MediaDetails updateInfo) {
         Media media = mediaService.findById(id);
         mapper.update(media, updateInfo);
         media.getUserProfile().getMedia().add(media);
@@ -74,6 +94,12 @@ public class MediaController {
         );
     }
 
+
+    @Operation(summary = "Delete media by id",
+            description = "Delete media, admin/moderator/logged-in-user use only",
+            parameters = {
+
+            })
     @DeleteMapping("/{id}")//admin//moderator//registereduser
     @Transactional
     public ResponseEntity<Object> deleteMedia(@PathVariable Long id) {

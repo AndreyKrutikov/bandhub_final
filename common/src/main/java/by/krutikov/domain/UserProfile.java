@@ -14,6 +14,7 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -33,11 +34,11 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
-
 
 @Data
 @EqualsAndHashCode(exclude = {"media", "account", "myReactions", "othersReactions"})
@@ -114,19 +115,22 @@ public class UserProfile {
         this.dateCreated = new Timestamp(new Date().getTime());
         this.dateModified = dateCreated;
         this.isVisible = FALSE;
+        this.media = new HashSet<>();
+        this.myReactions = new HashSet<>();
+        this.othersReactions = new HashSet<>();
         this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
     }
 
     @PreUpdate
     protected void onUpdate() {
         this.dateModified = new Timestamp(new Date().getTime());
-        this.isVisible = media.isEmpty() ? FALSE : TRUE;
+        this.isVisible = CollectionUtils.isEmpty(media) ? FALSE : TRUE;
         this.location = geometryFactory.createPoint(new Coordinate(lon, lat));
     }
 
     @PostLoad
     protected void onRead() {
-        this.isVisible = media.isEmpty() ? FALSE : TRUE;
+        this.isVisible = CollectionUtils.isEmpty(media) ? FALSE : TRUE;
         this.lon = location.getCoordinate().getX();
         this.lat = location.getCoordinate().getY();
     }

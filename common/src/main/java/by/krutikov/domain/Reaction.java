@@ -3,6 +3,8 @@ package by.krutikov.domain;
 import by.krutikov.domain.attributeconverter.ReactionAttributeConverter;
 import by.krutikov.domain.enums.ReactionType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -17,6 +19,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
+
 
 @Data
 @Entity

@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
-public class AuthRequest {
+public class AccountDetails {
     @NotNull
     @Email(message = "Invalid email")
     private String email;

@@ -1,6 +1,6 @@
 package by.krutikov.controller;
 
-import by.krutikov.dto.request.AccountInfo;
+import by.krutikov.dto.request.AccountDetails;
 import by.krutikov.dto.response.AuthResponse;
 import by.krutikov.security.jwt.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class AuthenticationController {
 //            @ApiResponse(code = 500, message = "Server error")
 //    })
     @PostMapping
-    public ResponseEntity<AuthResponse> loginUser(@RequestBody AccountInfo request) {
+    public ResponseEntity<AuthResponse> loginUser(@RequestBody AccountDetails request) {
 
         /*Check login and password*/
         Authentication authenticate = authenticationManager.authenticate(
