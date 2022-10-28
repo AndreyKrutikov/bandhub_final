@@ -99,7 +99,7 @@ public class AccountController {
     )
     @PreAuthorize(
             "hasAnyRole('ADMIN', 'MODERATOR') " +
-                    "or @accountServiceImpl.findById(#id).email.equals(principal.username)"
+                    "or principal.username.equals(@accountServiceImpl.findById(#id).email)"
     )
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@Valid @PathVariable @NotNull @Positive Long id) {
@@ -163,7 +163,7 @@ public class AccountController {
             content = @Content
     )
     @PutMapping("/{id}")
-    @PreAuthorize("@accountServiceImpl.findById(#id).email.equals(principal.username)")
+    @PreAuthorize("principal.username.equals(@accountServiceImpl.findById(#id).email)")
     @Transactional
     public ResponseEntity<Object> updateCredentials(@PathVariable Long id,
                                                     @Valid @RequestBody AccountDetails updateInfo) {
@@ -223,7 +223,7 @@ public class AccountController {
     @DeleteMapping("/{id}")
     @PreAuthorize(
             "hasAnyRole('ADMIN', 'MODERATOR') " +
-                    "or @accountServiceImpl.findById(#id).email.equals(principal.username)"
+                    "or principal.username.equals(@accountServiceImpl.findById(#id).email)"
     )
     @Transactional
     public ResponseEntity<Object> deleteAccount(@Valid @PathVariable @NotNull @Positive Long id) {
