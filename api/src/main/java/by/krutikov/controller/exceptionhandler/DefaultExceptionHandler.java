@@ -5,6 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -96,11 +98,11 @@ public class DefaultExceptionHandler {
                 .builder()
                 .exceptionId(UUIDGenerator.generateUUID())
                 .errorCode(6)
-                .errorMessage("Object already exists: " + e.getMessage())
+                .errorMessage("This email already exists: " + e.getMessage())
                 .exceptionClass(e.getClass().toString())
                 .build();
 
-        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -116,4 +118,33 @@ public class DefaultExceptionHandler {
 
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(Exception e) {
+
+        ErrorContainer error = ErrorContainer
+                .builder()
+                .exceptionId(UUIDGenerator.generateUUID())
+                .errorCode(8)
+                .errorMessage(e.getMessage())
+                .exceptionClass(e.getClass().toString())
+                .build();
+
+        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAuthorizationException(Exception e) {
+
+        ErrorContainer error = ErrorContainer
+                .builder()
+                .exceptionId(UUIDGenerator.generateUUID())
+                .errorCode(9)
+                .errorMessage(e.getMessage())
+                .exceptionClass(e.getClass().toString())
+                .build();
+
+        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.FORBIDDEN);
+    }
+
 }

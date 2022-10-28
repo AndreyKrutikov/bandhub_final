@@ -35,7 +35,7 @@ spring:
     database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
 jwt:
   secret: nieh89*Ujj_00098kniu>
-  expiration: 60000
+  expiration: 600000
 
 #security:
 #user:

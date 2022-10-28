@@ -8,11 +8,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        uses = RoleMapper.class)
 public interface AccountMapper {
     Account map(AccountDetails request);
 
@@ -22,9 +24,9 @@ public interface AccountMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void update(@MappingTarget Account account, AccountDetails request);
 
-    default List <AccountDetailsResponse> toList(List<Account> accounts){
+    default List<AccountDetailsResponse> toResponseList(Page<Account> accounts) {
         return accounts.stream()
                 .map(this::map)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); //toList(); java 16
     }
 }

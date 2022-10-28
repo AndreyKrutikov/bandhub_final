@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Configuration
 @RequiredArgsConstructor
 public class UserDetailsProvider implements UserDetailsService {
-    private final AccountRepository accountRepository; //todo accountService
+    private final AccountRepository accountRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) {

@@ -7,6 +7,8 @@ import by.krutikov.repository.AccountRepository;
 import by.krutikov.repository.RoleRepository;
 import by.krutikov.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -62,7 +64,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> findAll() {
-        return accountRepository.findAll();
+    public Page<Account> findAll(Pageable pageable) {
+        return accountRepository.findAll(pageable);
     }
 }

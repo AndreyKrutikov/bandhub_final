@@ -1,5 +1,6 @@
 package by.krutikov.security;
 
+import by.krutikov.security.filter.AuthenticationTokenFilter;
 import by.krutikov.security.jwt.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,13 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(
+        prePostEnabled = true,
+        securedEnabled = true,
+        jsr250Enabled = true
+)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userProvider;
-
     private final JwtTokenUtils tokenUtils;
     private final NoOpPasswordEncoder noOpPasswordEncoder;
 
@@ -34,12 +38,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(noOpPasswordEncoder);
     }
 
-//    @Bean
-//    public AuthenticationTokenFilter authenticationTokenFilterBean(AuthenticationManager authenticationManager) throws Exception {
-//        AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter(tokenUtils, userDetailsService);
-//        authenticationTokenFilter.setAuthenticationManager(authenticationManager);
-//        return authenticationTokenFilter;
-//    }
+    @Bean
+    public AuthenticationTokenFilter authenticationTokenFilterBean(AuthenticationManager authenticationManager) throws Exception {
+        AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter(tokenUtils, userProvider);
+        authenticationTokenFilter.setAuthenticationManager(authenticationManager);
+        return authenticationTokenFilter;
+    }
 
     @Bean
     @Override
@@ -57,12 +61,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                /*For swagger access only*/
+                /**For swagger access only*/
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                /**Actuator*/
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/swagger-ui.html#").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 //.antMatchers("/**").permitAll()
+                .antMatchers("/signup/**").permitAll()
                 .antMatchers("/login/**").permitAll()
                 .antMatchers("/accounts/**").permitAll()
                 .antMatchers("/profiles/**").permitAll()
@@ -74,8 +80,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
         // Custom JWT based authentication
-//        httpSecurity
-//                .addFilterBefore(authenticationTokenFilterBean(authenticationManagerBean()), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity
+                .addFilterBefore(authenticationTokenFilterBean(authenticationManagerBean()), AuthenticationTokenFilter.class);
     }
 
     //For swagger access only

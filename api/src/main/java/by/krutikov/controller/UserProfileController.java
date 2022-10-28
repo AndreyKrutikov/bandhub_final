@@ -1,10 +1,15 @@
 package by.krutikov.controller;
 
+import by.krutikov.domain.Account;
 import by.krutikov.domain.UserProfile;
 import by.krutikov.dto.request.UserProfileDetails;
 import by.krutikov.mappers.UserProfileMapper;
+import by.krutikov.security.CustomHeader;
+import by.krutikov.security.util.PrincipalUtil;
 import by.krutikov.service.AccountService;
 import by.krutikov.service.UserProfileService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.http.HttpStatus;
@@ -16,10 +21,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.Collections;
 
 @RequiredArgsConstructor
@@ -44,14 +51,19 @@ public class UserProfileController {
         );
     }
 
-    @GetMapping("/{id}/find-distance")
-    public ResponseEntity<Object> getAllByDistance(@PathVariable long id) {
-        UserProfile userProfile = profileService.findById(id);
-        Point userLocation = userProfile.getLocation();
+    @Parameter(in = ParameterIn.HEADER, name = CustomHeader.X_AUTH_TOKEN, required = true)
+    @GetMapping("/find-distance")
+    public ResponseEntity<Object> getAllByDistance(Principal principal) {
+        String email = PrincipalUtil.getUsername(principal);
+        Account accountByPrincipal = accountService.findByEmail(email);
+        Point location = accountByPrincipal.getUserProfile().getLocation();
+
+//        UserProfile userProfile = profileService.findById(id);
+//        Point userLocation = userProfile.getLocation();
 
         return new ResponseEntity<>(
                 Collections.singletonMap("distance sorted",
-                        mapper.toResponseList(profileService.findAllByDistanceTo(userLocation))), HttpStatus.OK
+                        mapper.toResponseList(profileService.findAllByDistanceTo(location))), HttpStatus.OK
         );
     }
 

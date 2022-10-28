@@ -24,6 +24,7 @@ import static java.util.Calendar.MILLISECOND;
 @RequiredArgsConstructor
 public class JwtTokenUtils {//todo do refactor!
     public static final String CREATED = "created";
+    public static final String EXPIRES = "expires";
     public static final String ROLES = "roles";
     public static final String JWT = "JWT";
     public static final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS512;
@@ -62,6 +63,7 @@ public class JwtTokenUtils {//todo do refactor!
         Map<String, Object> claims = new HashMap<>();
         claims.put(SUBJECT, userDetails.getUsername());
         claims.put(CREATED, currentDate());
+        claims.put(EXPIRES, expirationDate());//check this is ok
         claims.put(ROLES, getEncryptedRoles(userDetails));
         return generateToken(claims);
     }
@@ -69,7 +71,7 @@ public class JwtTokenUtils {//todo do refactor!
     private String generateToken(Map<String, Object> claims) {
         return Jwts
                 .builder()
-                //hearers:
+                //headers:
                 .setHeader(generateJWTHeaders())
                 .setClaims(claims)
                 //payload:
@@ -99,6 +101,7 @@ public class JwtTokenUtils {//todo do refactor!
 
     public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
         final Date created = getCreatedDateFromToken(token);
+
         return !(isCreatedBeforeLastPasswordReset(created, lastPasswordReset))
                 && !(isTokenExpired(token));
     }
@@ -117,6 +120,7 @@ public class JwtTokenUtils {//todo do refactor!
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
+
         return username.equals(userDetails.getUsername());
     }
 
