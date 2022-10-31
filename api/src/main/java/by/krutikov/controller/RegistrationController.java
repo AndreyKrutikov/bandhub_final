@@ -44,7 +44,7 @@ public class RegistrationController {
     )
     @ApiResponse(
             responseCode = "409",
-            description = "Email already exists. Goto login page",
+            description = "Provided email already exists",
             content = @Content
     )
     @PostMapping

@@ -14,6 +14,9 @@ public class PhoneNumberValidator implements ConstraintValidator<PhoneNumber, St
 
     @Override
     public boolean isValid(String phoneString, ConstraintValidatorContext context) {
+        if (phoneString == null) {
+            return true;
+        }
         return pattern.matcher(phoneString).matches();
     }
 }

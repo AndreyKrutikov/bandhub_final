@@ -1,7 +1,6 @@
 package by.krutikov.controller;
 
 import by.krutikov.domain.Account;
-import by.krutikov.dto.request.AccountDetails;
 import by.krutikov.dto.request.UpdateAccountStatusRequest;
 import by.krutikov.dto.response.AccountDetailsResponse;
 import by.krutikov.mappers.AccountMapper;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,11 +66,12 @@ public class AccountController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping
-    public ResponseEntity<Object> findAll(@ParameterObject Pageable pageable) {
-        Page<Account> result = accountService.findAll(pageable);
+    public ResponseEntity<Object> findAllPageable(@ParameterObject Pageable pageable) {
+        Page<Account> accountsPage = accountService.findAll(pageable);
+        Page<AccountDetailsResponse> responsePage = accountsPage.map(mapper::map);
 
         return new ResponseEntity<>(
-                Collections.singletonMap("all accounts", mapper.toResponseList(result)), HttpStatus.OK
+                Collections.singletonMap("accounts pageable", responsePage), HttpStatus.OK
         );
     }
 
@@ -94,13 +93,10 @@ public class AccountController {
     )
     @ApiResponse(
             responseCode = "403",
-            description = "Access denied! Admin/moderator/account_owner authorities only",
+            description = "Access denied. Admin/moderator authorities only",
             content = @Content
     )
-    @PreAuthorize(
-            "hasAnyRole('ADMIN', 'MODERATOR') " +
-                    "or principal.username.equals(@accountServiceImpl.findById(#id).email)"
-    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@Valid @PathVariable @NotNull @Positive Long id) {
         AccountDetailsResponse byId = mapper.map(accountService.findById(id));
@@ -111,7 +107,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Find account by email",
-            description = "Find account by email, admin/moderator use only")
+            description = "Find account by email. Admin/moderator use only")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "200",
@@ -128,7 +124,7 @@ public class AccountController {
     )
     @ApiResponse(
             responseCode = "403",
-            description = "Access denied! Admin/moderator authorities only",
+            description = "Access denied. Admin/moderator authorities only",
             content = @Content
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
@@ -138,44 +134,6 @@ public class AccountController {
 
         return new ResponseEntity<>(
                 Collections.singletonMap("account", byEmail), HttpStatus.OK
-        );
-    }
-
-    @Operation(summary = "Update credentials by account id",
-            description = "Update account credentials")
-    @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
-    @ApiResponse(
-            responseCode = "200",
-            description = "Account updated",
-            content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(implementation = AccountDetailsResponse.class)
-            )
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "Account not found",
-            content = @Content
-    )
-    @ApiResponse(
-            responseCode = "403",
-            description = "Access denied! Authorised user only",
-            content = @Content
-    )
-    @PutMapping("/{id}")
-    @PreAuthorize("principal.username.equals(@accountServiceImpl.findById(#id).email)")
-    @Transactional
-    public ResponseEntity<Object> updateCredentials(@PathVariable Long id,
-                                                    @Valid @RequestBody AccountDetails updateInfo) {
-        Account currentAccount = accountService.findById(id);
-        mapper.update(currentAccount, updateInfo);
-
-        currentAccount = accountService.updateAccount(currentAccount);
-
-        AccountDetailsResponse updated = mapper.map(currentAccount);
-
-        return new ResponseEntity<>(
-                Collections.singletonMap("account updated", updated), HttpStatus.OK
         );
     }
 
@@ -197,7 +155,7 @@ public class AccountController {
     )
     @ApiResponse(
             responseCode = "403",
-            description = "Access denied! Authorised user only",
+            description = "Access denied. Admin/moderator authorities only",
             content = @Content
     )
     @PatchMapping("/{id}")
@@ -210,23 +168,25 @@ public class AccountController {
 
         currentAccount = accountService.updateAccount(currentAccount);
 
-        AccountDetailsResponse updated = mapper.map(currentAccount);
+        AccountDetailsResponse response = mapper.map(currentAccount);
 
         return new ResponseEntity<>(
-                Collections.singletonMap("account status updated", updated), HttpStatus.OK
+                Collections.singletonMap("account status updated", response), HttpStatus.OK
         );
     }
 
     @Operation(summary = "Delete account by id",
-            description = "Delete account, admin/moderator/authorised user use only")
+            description = "Delete account. Admin/moderator use only")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
-    @DeleteMapping("/{id}")
-    @PreAuthorize(
-            "hasAnyRole('ADMIN', 'MODERATOR') " +
-                    "or principal.username.equals(@accountServiceImpl.findById(#id).email)"
+    @ApiResponse(
+            responseCode = "403",
+            description = "Access denied. Admin/moderator authorities only",
+            content = @Content
     )
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @Transactional
-    public ResponseEntity<Object> deleteAccount(@Valid @PathVariable @NotNull @Positive Long id) {
+    public ResponseEntity<Object> deleteAccountById(@Valid @PathVariable @NotNull @Positive Long id) {
         accountService.deleteById(id);
 
         return ResponseEntity.noContent().build();

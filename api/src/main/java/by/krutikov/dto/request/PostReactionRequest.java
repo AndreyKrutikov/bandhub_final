@@ -15,6 +15,7 @@ public class PostReactionRequest {
     @Positive
     private long toProfileId;
 
+    @NotNull
     @ValueOfEnum(enumClass = ReactionType.class, message = "Unsupported reaction type")
     private String reactionType;
 }

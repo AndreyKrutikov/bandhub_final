@@ -8,9 +8,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
+
+    Optional <UserProfile> findByAccount_Id(Long id);
+
     @Query(
             value = "select up.id, " +
                     "up.is_visible, " +

@@ -3,17 +3,27 @@ package by.krutikov.controller;
 import by.krutikov.domain.Account;
 import by.krutikov.domain.UserProfile;
 import by.krutikov.dto.request.UserProfileDetails;
+import by.krutikov.dto.response.AccountDetailsResponse;
+import by.krutikov.dto.response.UserProfileDetailsResponse;
 import by.krutikov.mappers.UserProfileMapper;
 import by.krutikov.security.CustomHeader;
 import by.krutikov.security.util.PrincipalUtil;
 import by.krutikov.service.AccountService;
 import by.krutikov.service.UserProfileService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +31,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Collections;
+
+import static by.krutikov.security.CustomHeader.X_AUTH_TOKEN;
+import static io.swagger.v3.oas.annotations.enums.ParameterIn.HEADER;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,17 +49,42 @@ public class UserProfileController {
     private final AccountService accountService;
     private final UserProfileMapper mapper;
 
+    @Operation(summary = "Get user profiles",
+            description = "Get all profiles, pageable. Admin/moderator use only")
+    @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
+    @ApiResponse(
+            responseCode = "200",
+            description = "Profiles found",
+            content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(
+                            schema = @Schema(implementation = UserProfileDetailsResponse.class)
+                    )
+            )
+    )
+    @ApiResponse(
+            responseCode = "403",
+            description = "Access denied! Admin/moderator authorities only",
+            content = @Content
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping
-    public ResponseEntity<Object> getAll() {
+    public ResponseEntity<Object> findAllPageable(Pageable pageable) {
+        Page<UserProfile> profilesPage = profileService.findAll(pageable);
+        Page<UserProfileDetailsResponse> responsePage = profilesPage.map(mapper::map);
+
         return new ResponseEntity<>(
-                Collections.singletonMap("all profiles", mapper.toResponseList(profileService.findAll())), HttpStatus.OK
+                Collections.singletonMap("all profiles", responsePage), HttpStatus.OK
         );
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getById(@PathVariable long id) {
+    public ResponseEntity<Object> findById(@PathVariable long id) {
+        UserProfileDetailsResponse byId = mapper.map(profileService.findById(id));
+
         return new ResponseEntity<>(
-                Collections.singletonMap("found by id", mapper.map(profileService.findById(id))), HttpStatus.OK
+                Collections.singletonMap("found by id", byId), HttpStatus.OK
         );
     }
 
@@ -65,39 +102,5 @@ public class UserProfileController {
                 Collections.singletonMap("distance sorted",
                         mapper.toResponseList(profileService.findAllByDistanceTo(location))), HttpStatus.OK
         );
-    }
-
-    @PostMapping
-    @Transactional
-    public ResponseEntity<Object> createNewUserProfile(@Valid @RequestBody UserProfileDetails request) {
-        UserProfile profile = mapper.map(request);
-        profile.setAccount(accountService.findById(request.getAccountId()));
-        profile = profileService.createUserProfile(profile);
-
-        return new ResponseEntity<>(
-                Collections.singletonMap("profile created", mapper.map(profile)), HttpStatus.CREATED
-        );
-    }
-
-    @PutMapping("/{id}")
-    @Transactional
-    public ResponseEntity<Object> updateUserProfile(@PathVariable Long id,
-                                                    @Valid @RequestBody UserProfileDetails updateInfo) {
-        UserProfile currentProfile = profileService.findById(id);
-        mapper.update(currentProfile, updateInfo);
-
-        currentProfile = profileService.updateUserProfile(currentProfile);
-
-        return new ResponseEntity<>(
-                Collections.singletonMap("profile updated", mapper.map(currentProfile)), HttpStatus.OK
-        );
-    }
-
-    @DeleteMapping("/{id}")//admin//moderator//registereduser
-    @Transactional
-    public ResponseEntity<Object> deleteUserProfile(@PathVariable Long id) {
-        profileService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
     }
 }

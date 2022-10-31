@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring",
         uses = UserProfileService.class)
 public interface MediaMapper {
-    @Mapping(source = "profileId", target = "userProfile")
+    //@Mapping(source = "profileId", target = "userProfile")
     Media map(MediaDetails request);
 
     @Mapping(source = "userProfile.id", target = "profileId")

@@ -98,7 +98,7 @@ public class DefaultExceptionHandler {
                 .builder()
                 .exceptionId(UUIDGenerator.generateUUID())
                 .errorCode(6)
-                .errorMessage("This email already exists: " + e.getMessage())
+                .errorMessage("Resource already exists: " + e.getMessage())
                 .exceptionClass(e.getClass().toString())
                 .build();
 

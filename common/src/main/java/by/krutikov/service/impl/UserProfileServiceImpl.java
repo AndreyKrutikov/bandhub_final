@@ -5,6 +5,8 @@ import by.krutikov.repository.UserProfileRepository;
 import by.krutikov.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -33,6 +35,15 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Override
     public UserProfile findById(Long id) {
         return userProfileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+//    public UserProfile findByAccountId(Long id) {
+//        return userProfileRepository.findByAccount_Id(id).orElseThrow(EntityNotFoundException::new);
+//    }
+
+    @Override
+    public Page<UserProfile> findAll(Pageable pageable) {
+        return userProfileRepository.findAll(pageable);
     }
 
     @Override

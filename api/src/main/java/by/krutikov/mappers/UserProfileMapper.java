@@ -2,6 +2,7 @@ package by.krutikov.mappers;
 
 import by.krutikov.domain.UserProfile;
 import by.krutikov.dto.request.UserProfileDetails;
+import by.krutikov.dto.request.UserProfileDetailsUpdate;
 import by.krutikov.dto.response.UserProfileDetailsResponse;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -21,10 +22,9 @@ public interface UserProfileMapper {
     UserProfileDetailsResponse map(UserProfile userProfile);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void update(@MappingTarget UserProfile userProfile, UserProfileDetails request);
+    void update(@MappingTarget UserProfile userProfile, UserProfileDetailsUpdate request);
 
     default List<UserProfileDetailsResponse> toResponseList(List<UserProfile> profiles) {
-        //profiles.forEach(this::map);
         return profiles.stream()
                 .map(this::map)
                 .collect(Collectors.toList());

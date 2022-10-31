@@ -36,10 +36,6 @@ public class MediaController {
             description = "Get all media, admin/moderator use only",
             parameters = {
             })
-//    @Params({
-//            @ApiImplicitParam(name = "X-Auth-Token", defaultValue = "token", required = true, paramType = "header", dataType = "string"),
-//            @ApiImplicitParam(name = "query", defaultValue = "query", required = false, paramType = "query", dataType = "string")
-//    }))
     @GetMapping
     public ResponseEntity<Object> getAll() {
         return new ResponseEntity<>(
@@ -58,22 +54,7 @@ public class MediaController {
                 HttpStatus.OK
         );
     }
-    @Operation(summary = "Create new media",
-            description = "Add new media to user profile available for logged-in user",
-            parameters = {
-            })
-    @PostMapping
-    @Transactional
-    public ResponseEntity<Object> createMedia(@RequestBody MediaDetails createInfo) {
-        Media media = mapper.map(createInfo);
-        media.getUserProfile().getMedia().add(media);
 
-        media = mediaService.createMedia(media);
-
-        return new ResponseEntity<>(
-                Collections.singletonMap("media created", media), HttpStatus.CREATED
-        );
-    }
 
     @Operation(summary = "Update media by media id",
             description = "Update user profile media, available for logged-in user",

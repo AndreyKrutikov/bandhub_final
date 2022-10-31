@@ -7,9 +7,9 @@ import javax.validation.constraints.Positive;
 
 @Data
 public class MediaDetails {
-    @NotNull
-    @Positive
-    private long profileId;
+//    @NotNull
+//    @Positive
+//    private long profileId;
     private String photoUrl;
     private String demoUrl;
 }
