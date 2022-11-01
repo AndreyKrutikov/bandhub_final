@@ -61,12 +61,12 @@ public class AccountController {
     )
     @ApiResponse(
             responseCode = "403",
-            description = "Access denied! Admin/moderator authorities only",
+            description = "Access denied. Admin/moderator authorities only",
             content = @Content
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping
-    public ResponseEntity<Object> findAllPageable(@ParameterObject Pageable pageable) {
+    public ResponseEntity<Object> findAllAppAccountsPageable(@ParameterObject Pageable pageable) {
         Page<Account> accountsPage = accountService.findAll(pageable);
         Page<AccountDetailsResponse> responsePage = accountsPage.map(mapper::map);
 

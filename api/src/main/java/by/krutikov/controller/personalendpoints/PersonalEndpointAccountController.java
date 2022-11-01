@@ -97,10 +97,18 @@ public class PersonalEndpointAccountController {
         );
     }
 
-    //todo deleting resources !exists
     @Operation(summary = "Delete account",
             description = "Delete account, Account owner authorities only")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
+    @ApiResponse(
+            responseCode = "204",
+            description = "Account successfully deleted"
+    )
+    @ApiResponse(
+            responseCode = "403",
+            description = "Access denied. Account owner authorities only",
+            content = @Content
+    )
     @DeleteMapping()
     @Transactional
     public ResponseEntity<Object> deleteAccount(Principal principal) {

@@ -4,6 +4,7 @@ import by.krutikov.domain.Account;
 import by.krutikov.domain.Media;
 import by.krutikov.domain.UserProfile;
 import by.krutikov.dto.request.MediaDetails;
+import by.krutikov.dto.request.MediaDetailsUpdate;
 import by.krutikov.dto.response.MediaDetailsResponse;
 import by.krutikov.mappers.MediaMapper;
 import by.krutikov.security.util.PrincipalUtil;
@@ -82,7 +83,7 @@ public class PersonalEndpointMediaController {
             description = "Add new media to user profile. Principal object required")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
-            responseCode = "200",
+            responseCode = "201",
             description = "New media created",
             content = @Content(
                     mediaType = "application/json",
@@ -137,7 +138,7 @@ public class PersonalEndpointMediaController {
     @Transactional
     public ResponseEntity<Object> updateMedia(Principal principal,
                                               @PathVariable Long id,
-                                              @Valid @RequestBody MediaDetails updateInfo) {
+                                              @Valid @RequestBody MediaDetailsUpdate updateInfo) {
         String email = PrincipalUtil.getUsername(principal);
         UserProfile myProfile = accountService.findByEmail(email).getUserProfile();
 
@@ -145,7 +146,7 @@ public class PersonalEndpointMediaController {
                 .stream()
                 .filter(m -> id.equals(m.getId()))
                 .findFirst()
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);//todo throwing persistence exception
 
         mapper.update(toBeUpdated, updateInfo);
         toBeUpdated = mediaService.updateMedia(toBeUpdated);

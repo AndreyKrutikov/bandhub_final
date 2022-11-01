@@ -1,6 +1,7 @@
 package by.krutikov.controller.exceptionhandler;
 
 import by.krutikov.util.UUIDGenerator;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -147,4 +148,17 @@ public class DefaultExceptionHandler {
         return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<Object> handleExpiredJwtException(Exception e) {
+
+        ErrorContainer error = ErrorContainer
+                .builder()
+                .exceptionId(UUIDGenerator.generateUUID())
+                .errorCode(10)
+                .errorMessage(e.getMessage())
+                .exceptionClass(e.getClass().toString())
+                .build();
+
+        return new ResponseEntity<>(Collections.singletonMap("error", error), HttpStatus.FORBIDDEN);
+    }
 }

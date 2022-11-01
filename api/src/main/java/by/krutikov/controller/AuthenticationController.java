@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/signin")
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtils tokenUtils;
     private final UserDetailsService userProvider;
+
+    // TODO: 31.10.22 document this
 
     //    @ApiOperation(value = "Login user in system", notes = "Return Auth-Token with user login")
 //    @ApiResponses({
@@ -30,7 +32,7 @@ public class AuthenticationController {
 //            @ApiResponse(code = 500, message = "Server error")
 //    })
     @PostMapping
-    public ResponseEntity<AuthResponse> loginUser(@RequestBody AccountDetails request) {
+    public ResponseEntity<AuthResponse> signInUser(@RequestBody AccountDetails request) {
 
         /*Check login and password*/
         Authentication authenticate = authenticationManager.authenticate(

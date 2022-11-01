@@ -2,8 +2,6 @@ package by.krutikov.controller;
 
 import by.krutikov.domain.Account;
 import by.krutikov.domain.UserProfile;
-import by.krutikov.dto.request.UserProfileDetails;
-import by.krutikov.dto.response.AccountDetailsResponse;
 import by.krutikov.dto.response.UserProfileDetailsResponse;
 import by.krutikov.mappers.UserProfileMapper;
 import by.krutikov.security.CustomHeader;
@@ -24,17 +22,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Collections;
 
@@ -64,7 +56,7 @@ public class UserProfileController {
     )
     @ApiResponse(
             responseCode = "403",
-            description = "Access denied! Admin/moderator authorities only",
+            description = "Access denied. Admin/moderator authorities only",
             content = @Content
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
@@ -78,7 +70,7 @@ public class UserProfileController {
         );
     }
 
-
+    // TODO: 31.10.22
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable long id) {
         UserProfileDetailsResponse byId = mapper.map(profileService.findById(id));
@@ -88,6 +80,7 @@ public class UserProfileController {
         );
     }
 
+    // TODO: 31.10.22
     @Parameter(in = ParameterIn.HEADER, name = CustomHeader.X_AUTH_TOKEN, required = true)
     @GetMapping("/find-distance")
     public ResponseEntity<Object> getAllByDistance(Principal principal) {

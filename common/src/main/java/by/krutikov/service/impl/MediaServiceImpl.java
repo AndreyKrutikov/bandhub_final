@@ -4,6 +4,8 @@ import by.krutikov.domain.Media;
 import by.krutikov.repository.MediaRepository;
 import by.krutikov.service.MediaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -32,6 +34,11 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public List<Media> findAll() {
         return mediaRepository.findAll();
+    }
+
+    @Override
+    public Page<Media> findAll(Pageable pageable) {
+        return mediaRepository.findAll(pageable);
     }
 
     @Override

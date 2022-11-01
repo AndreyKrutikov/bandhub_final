@@ -20,6 +20,6 @@ public class UserProfileDetailsResponse {
     private Timestamp dateCreated;
     private Timestamp dateModified;
     private List<MediaDetailsResponse> media;
-    private List<PostReactionResponse> myReactions;
-    private List<PostReactionResponse> othersReactions;
+    private List<ReactionDetailsResponse> myReactions;
+    private List<ReactionDetailsResponse> othersReactions;
 }

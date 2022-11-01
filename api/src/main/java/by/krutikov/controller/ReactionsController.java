@@ -3,7 +3,6 @@ package by.krutikov.controller;
 import by.krutikov.domain.Reaction;
 import by.krutikov.domain.UserProfile;
 import by.krutikov.dto.request.PostReactionRequest;
-import by.krutikov.dto.response.PostReactionResponse;
 import by.krutikov.mappers.ReactionMapper;
 import by.krutikov.service.ReactionService;
 import by.krutikov.service.UserProfileService;
@@ -23,10 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+
+// TODO: 31.10.22 implement personal reactionController
 
 @RestController
 @RequestMapping("/reactions/{thisId}")  //profiles/{id}/reactions ??? this.id = userprofileIdv //profiles/7/reactions

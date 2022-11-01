@@ -4,7 +4,6 @@ import by.krutikov.domain.Account;
 import by.krutikov.domain.UserProfile;
 import by.krutikov.dto.request.UserProfileDetails;
 import by.krutikov.dto.request.UserProfileDetailsUpdate;
-import by.krutikov.dto.response.AccountDetailsResponse;
 import by.krutikov.dto.response.UserProfileDetailsResponse;
 import by.krutikov.mappers.UserProfileMapper;
 import by.krutikov.security.util.PrincipalUtil;
@@ -19,11 +18,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -161,6 +158,15 @@ public class PersonalEndpointUserProfileController {
     @Operation(summary = "Delete profile",
             description = "Delete profile, Principal object required")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
+    @ApiResponse(
+            responseCode = "204",
+            description = "Profile successfully deleted"
+    )
+    @ApiResponse(
+            responseCode = "403",
+            description = "Access denied. Account owner authorities only",
+            content = @Content
+    )
     @DeleteMapping()
     @Transactional
     public ResponseEntity<Object> deleteUserProfile(Principal principal) {

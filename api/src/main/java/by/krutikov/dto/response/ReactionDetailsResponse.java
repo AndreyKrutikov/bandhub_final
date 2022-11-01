@@ -6,7 +6,7 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-public class PostReactionResponse {
+public class ReactionDetailsResponse {
     private long id;
     private long fromProfileId;
     private long toProfileId;

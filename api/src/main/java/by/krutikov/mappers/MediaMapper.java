@@ -2,6 +2,7 @@ package by.krutikov.mappers;
 
 import by.krutikov.domain.Media;
 import by.krutikov.dto.request.MediaDetails;
+import by.krutikov.dto.request.MediaDetailsUpdate;
 import by.krutikov.dto.response.MediaDetailsResponse;
 import by.krutikov.service.UserProfileService;
 import org.mapstruct.BeanMapping;
@@ -24,9 +25,14 @@ public interface MediaMapper {
     MediaDetailsResponse map(Media media);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void update(@MappingTarget Media media, MediaDetails request);
+    void update(@MappingTarget Media media, MediaDetailsUpdate request);
 
     default List<MediaDetailsResponse> toList(Set<Media> media) {
+        return media.stream()
+                .map(this::map)
+                .collect(Collectors.toList());
+    }
+    default List<MediaDetailsResponse> toList(List<Media> media) {
         return media.stream()
                 .map(this::map)
                 .collect(Collectors.toList());
