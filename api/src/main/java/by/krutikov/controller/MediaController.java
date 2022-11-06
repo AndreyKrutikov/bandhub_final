@@ -64,7 +64,6 @@ public class MediaController {
         );
     }
 
-    // TODO: 31.10.22 think about getting id from pathVariable
     @Operation(summary = "Get media by profile id",
             description = "Get media by profile id")
     @ApiResponse(
@@ -76,6 +75,11 @@ public class MediaController {
                             schema = @Schema(implementation = MediaDetailsResponse.class)
                     )
             )
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Profile by request parameter not found",
+            content = @Content
     )
     @GetMapping("/by-profile-id")
     public ResponseEntity<Object> findAllMediaByProfileId(@RequestParam(name = "profileId") Long id) {
