@@ -4,6 +4,8 @@ import by.krutikov.domain.Account;
 import by.krutikov.dto.request.AccountDetails;
 import by.krutikov.dto.request.AccountDetailsUpdate;
 import by.krutikov.dto.response.AccountDetailsResponse;
+import by.krutikov.security.encoder.EncodedMapping;
+import by.krutikov.security.encoder.PasswordEncoderMapper;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,10 +16,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
-        uses = RoleMapper.class)
+        uses = {RoleMapper.class,
+                PasswordEncoderMapper.class}
+)
 public interface AccountMapper {
+    @Mapping(source = "password", target = "password", qualifiedBy = EncodedMapping.class)
     Account map(AccountDetails request);
 
+    @Mapping(source = "password", target = "password", qualifiedBy = EncodedMapping.class)
     Account map(AccountDetailsUpdate request);
 
     @Mapping(source = "userProfile.id", target = "profileId")
@@ -32,3 +38,9 @@ public interface AccountMapper {
                 .collect(Collectors.toList());
     }
 }
+//@Mapper(uses = PasswordEncoderMapper.class)
+//public interface UserMapper {
+//
+//    @Mapping(source = "password", target = "encryptedPassword", qualifiedBy = EncodedMapping.class)
+//    UserDto createUserRequestModelToUserDto(CreateUserRequestModel userRequestModel);
+//}
