@@ -39,11 +39,11 @@ public class PersonalEndpointAccountController {
     private final AccountMapper mapper;
 
     @Operation(summary = "Show account info",
-            description = "Show account info, Principal object required")
+            description = "Endpoint shows account information of authorised user")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "200",
-            description = "Personal account details",
+            description = "Personal account details found",
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = AccountDetailsResponse.class)
@@ -51,7 +51,7 @@ public class PersonalEndpointAccountController {
     )
     @ApiResponse(
             responseCode = "403",
-            description = "Access denied. Account_owner authorities only",
+            description = "Access is denied. Account owner authorities only",
             content = @Content
     )
     @GetMapping()
@@ -66,7 +66,7 @@ public class PersonalEndpointAccountController {
     }
 
     @Operation(summary = "Update credentials",
-            description = "Update account credentials, Principal object required")
+            description = "Endpoint for updating account credentials; user must be authorised")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "200",
@@ -98,7 +98,8 @@ public class PersonalEndpointAccountController {
     }
 
     @Operation(summary = "Delete account",
-            description = "Delete account, Account owner authorities only")
+            description = "Endpoint for deleting account; user must be authorised. " +
+                    "All bound entities such as user media, likes, profile info are cascade deleted")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "204",
@@ -115,7 +116,7 @@ public class PersonalEndpointAccountController {
         String email = PrincipalUtil.getUsername(principal);
         Account myAccount = accountService.findByEmail(email);
         accountService.deleteById(myAccount.getId());
-    //PRINCIPAL = null?
+        //PRINCIPAL = null?
         return ResponseEntity.noContent().build();
     }
 }

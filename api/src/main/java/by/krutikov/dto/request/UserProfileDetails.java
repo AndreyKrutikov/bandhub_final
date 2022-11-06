@@ -8,14 +8,13 @@ import lombok.Data;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 @Data
+
+// TODO: 2.11.22 enum parsing exception in jackson not in validation
 public class UserProfileDetails {
     @NotBlank
     @Size(min = 1, max = 255)
@@ -37,11 +36,11 @@ public class UserProfileDetails {
 
     @NotNull
     @ValueOfEnum(enumClass = InstrumentType.class, message = "Unsupported instrument type")
-    private String instrument;
+    private InstrumentType instrument;
 
     @NotNull
     @ValueOfEnum(enumClass = ExperienceLevel.class, message = "Unsupported experience level")
-    private String experience;
+    private ExperienceLevel experience;
 
     @NotBlank
     @Size(min = 1, max = 255)

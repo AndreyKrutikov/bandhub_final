@@ -1,6 +1,5 @@
 package by.krutikov.repository;
 
-import by.krutikov.domain.Account;
 import by.krutikov.domain.Media;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

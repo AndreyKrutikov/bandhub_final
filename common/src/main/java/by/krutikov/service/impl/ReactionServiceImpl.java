@@ -19,7 +19,8 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public Reaction findByFromProfileAndToProfile(Long fromProfileId, Long toProfileId) {
-        return reactionRepository.findByFromProfileAndToProfile(fromProfileId, toProfileId).orElseThrow(EntityNotFoundException::new);
+        return reactionRepository.findByFromProfileAndToProfile(fromProfileId, toProfileId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override

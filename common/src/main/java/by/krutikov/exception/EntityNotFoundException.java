@@ -1,7 +1,6 @@
 package by.krutikov.exception;
 
 public class EntityNotFoundException extends RuntimeException {
-
     private final String customMessage;
 
     private final Integer errorCode;

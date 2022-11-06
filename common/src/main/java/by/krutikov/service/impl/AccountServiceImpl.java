@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
-import java.util.List;
 
 import static by.krutikov.domain.enums.SystemRoles.ROLE_ANONYMOUS;
 import static by.krutikov.domain.enums.SystemRoles.ROLE_USER;

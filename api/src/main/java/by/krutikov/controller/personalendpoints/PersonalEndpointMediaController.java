@@ -10,7 +10,6 @@ import by.krutikov.mappers.MediaMapper;
 import by.krutikov.security.util.PrincipalUtil;
 import by.krutikov.service.AccountService;
 import by.krutikov.service.MediaService;
-import by.krutikov.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -51,7 +50,7 @@ public class PersonalEndpointMediaController {
     private final MediaMapper mapper;
 
     @Operation(summary = "Show all profile media",
-            description = "Show all profile media, Principal object required")
+            description = "Endpoint shows list of user media, if there is; user must be authorised")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "200",
@@ -184,7 +183,7 @@ public class PersonalEndpointMediaController {
 
         Media toBeDeleted = myProfile.getMedia()
                 .stream()
-                .filter(m -> id.equals(m.getId()))
+                .filter(media -> id.equals(media.getId()))
                 .findFirst()
                 .orElseThrow(EntityNotFoundException::new);//todo throwing persistence exception
 

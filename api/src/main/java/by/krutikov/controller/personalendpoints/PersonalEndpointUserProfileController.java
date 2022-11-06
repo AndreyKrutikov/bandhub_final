@@ -145,7 +145,6 @@ public class PersonalEndpointUserProfileController {
 
         UserProfile profileToUpdate = myAccount.getUserProfile();
         mapper.update(profileToUpdate, updateInfo);
-        //Setting updated profile to account?
         profileToUpdate = profileService.updateUserProfile(profileToUpdate);
 
         UserProfileDetailsResponse response = mapper.map(profileToUpdate);

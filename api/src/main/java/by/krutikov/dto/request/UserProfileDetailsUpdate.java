@@ -8,7 +8,6 @@ import lombok.Data;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 // TODO: 31.10.22 check @NotBlank over displayedName and description fields
@@ -30,10 +29,10 @@ public class UserProfileDetailsUpdate {
     private String phoneNumber;
 
     @ValueOfEnum(enumClass = InstrumentType.class, message = "Unsupported instrument type")
-    private String instrument;
+    private InstrumentType instrument;
 
     @ValueOfEnum(enumClass = ExperienceLevel.class, message = "Unsupported experience level")
-    private String experience;
+    private ExperienceLevel experience;
 
     //@NotBlank
     @Size(min = 1, max = 255)

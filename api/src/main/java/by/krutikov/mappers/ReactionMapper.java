@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring",
         uses = UserProfileService.class)
 public interface ReactionMapper {
-
-    @Mapping(source = "toProfileId", target = "toProfile")
     Reaction map(PostReactionRequest request);
 
     @Mapping(source = "toProfile.id", target = "toProfileId")

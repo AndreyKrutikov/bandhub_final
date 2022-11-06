@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,13 +23,14 @@ import static java.util.Calendar.MILLISECOND;
 
 @Component
 @RequiredArgsConstructor
-public class JwtTokenUtils {//todo do refactor!
+public class JwtTokenUtils {
     public static final String CREATED = "created";
     public static final String EXPIRES = "expires";
     public static final String ROLES = "roles";
     public static final String JWT = "JWT";
     public static final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS512;
     private final JwtTokenConfig jwtTokenConfig;
+    private final List<String> destroyedTokens = new ArrayList<>();
 
     public String getUsernameFromToken(String token) {
         return getClaimsFromToken(token).getSubject();
@@ -63,7 +65,7 @@ public class JwtTokenUtils {//todo do refactor!
         Map<String, Object> claims = new HashMap<>();
         claims.put(SUBJECT, userDetails.getUsername());
         claims.put(CREATED, currentDate());
-        claims.put(EXPIRES, expirationDate());//check this is ok
+        claims.put(EXPIRES, expirationDate());
         claims.put(ROLES, getEncryptedRoles(userDetails));
         return generateToken(claims);
     }
@@ -103,17 +105,20 @@ public class JwtTokenUtils {//todo do refactor!
         final Date created = getCreatedDateFromToken(token);
 
         return !(isCreatedBeforeLastPasswordReset(created, lastPasswordReset))
-                && !(isTokenExpired(token));
+                && !(isTokenExpired(token)) && !(isTokenDestroyed(token));
     }
 
     public String refreshToken(String token) {
+        if (isTokenDestroyed(token) || isTokenExpired(token)) {
+            return null;
+        }
         String refreshedToken = null;
         try {
             final Claims claims = getClaimsFromToken(token);
             claims.put(CREATED, currentDate());
             refreshedToken = generateToken(claims);
         } catch (Exception e) {
-            refreshedToken = null;
+            return null;
         }
         return refreshedToken;
     }
@@ -121,7 +126,15 @@ public class JwtTokenUtils {//todo do refactor!
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
 
-        return username.equals(userDetails.getUsername());
+        return !(isTokenDestroyed(token)) && username.equals(userDetails.getUsername());
+    }
+
+    public void destroyToken(String token) {
+        destroyedTokens.add(token);
+    }
+
+    private Boolean isTokenDestroyed(String token) {
+        return destroyedTokens.contains(token);
     }
 
     private Date currentDate() {

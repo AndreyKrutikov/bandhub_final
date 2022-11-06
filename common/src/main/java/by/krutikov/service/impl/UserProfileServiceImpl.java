@@ -1,6 +1,9 @@
 package by.krutikov.service.impl;
 
+import by.krutikov.domain.Reaction;
 import by.krutikov.domain.UserProfile;
+import by.krutikov.domain.enums.ExperienceLevel;
+import by.krutikov.domain.enums.InstrumentType;
 import by.krutikov.repository.UserProfileRepository;
 import by.krutikov.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +41,6 @@ public class UserProfileServiceImpl implements UserProfileService {
         return userProfileRepository.findById(id).orElseThrow(EntityNotFoundException::new);
     }
 
-//    public UserProfile findByAccountId(Long id) {
-//        return userProfileRepository.findByAccount_Id(id).orElseThrow(EntityNotFoundException::new);
-//    }
-
     @Override
     public Page<UserProfile> findAll(Pageable pageable) {
         return userProfileRepository.findAll(pageable);
@@ -52,7 +52,27 @@ public class UserProfileServiceImpl implements UserProfileService {
     }
 
     @Override
-    public List<UserProfile> findAllByDistanceTo(Point userLocation) {
-        return userProfileRepository.findAllByDistanceTo(userLocation);
+    public List<UserProfile> findAllDistanceOrdered(Point userLocation) {
+        return userProfileRepository.findDistanceOrdered(userLocation);
+    }
+
+    @Override
+    public List<UserProfile> findByCriteriaDistanceOrdered(Point userLocation,
+                                                           InstrumentType instrumentType,
+                                                           ExperienceLevel experienceLevel) {
+        return userProfileRepository.findByCriteriaDistanceOrdered(
+                userLocation,
+                instrumentType.getName(),
+                experienceLevel.getName());
+    }
+
+    public List<UserProfile> filterSeenBefore(UserProfile currentProfile, List<UserProfile> foundProfiles) {
+        List<UserProfile> seenProfiles = currentProfile.getMyReactions()
+                .stream()
+                .map(Reaction::getToProfile)
+                .collect(Collectors.toList());
+        foundProfiles.removeAll(seenProfiles);
+
+        return foundProfiles;
     }
 }

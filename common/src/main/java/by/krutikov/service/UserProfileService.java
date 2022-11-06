@@ -1,7 +1,8 @@
 package by.krutikov.service;
 
-import by.krutikov.domain.Media;
 import by.krutikov.domain.UserProfile;
+import by.krutikov.domain.enums.ExperienceLevel;
+import by.krutikov.domain.enums.InstrumentType;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,5 +24,11 @@ public interface UserProfileService {
 
     Page<UserProfile> findAll(Pageable pageable);
 
-    List<UserProfile> findAllByDistanceTo(Point userLocation);
+    List<UserProfile> findAllDistanceOrdered(Point userLocation);
+
+    List<UserProfile> findByCriteriaDistanceOrdered(Point userLocation,
+                                                    InstrumentType instrumentType,
+                                                    ExperienceLevel experienceLevel);
+
+    List<UserProfile> filterSeenBefore(UserProfile currentProfile, List<UserProfile> foundProfiles);
 }

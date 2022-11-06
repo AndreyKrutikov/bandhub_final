@@ -37,10 +37,6 @@ jwt:
   secret: nieh89*Ujj_00098kniu>
   expiration: 600000
 
-#security:
-#user:
-#password: 1111
-
 logging:
   level:
     org.springframework: ERROR

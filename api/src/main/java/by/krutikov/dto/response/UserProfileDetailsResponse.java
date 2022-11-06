@@ -1,5 +1,7 @@
 package by.krutikov.dto.response;
 
+import by.krutikov.domain.enums.ExperienceLevel;
+import by.krutikov.domain.enums.InstrumentType;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -13,8 +15,8 @@ public class UserProfileDetailsResponse {
     private double lon;
     private double lat;
     private String phoneNumber;
-    private String instrument;
-    private String experience;
+    private InstrumentType instrument;
+    private ExperienceLevel experience;
     private String description;
     private Boolean isVisible;
     private Timestamp dateCreated;
