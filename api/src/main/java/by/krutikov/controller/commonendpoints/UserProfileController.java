@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Collections;
 
 import static by.krutikov.security.CustomHeader.X_AUTH_TOKEN;
@@ -67,7 +70,7 @@ public class UserProfileController {
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "200",
-            description = "Profiles found",
+            description = "Profile found",
             content = @Content(
                     mediaType = "application/json",
                     array = @ArraySchema(
@@ -75,8 +78,13 @@ public class UserProfileController {
                     )
             )
     )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Profile not found",
+            content = @Content
+    )
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findById(@PathVariable long id) {
+    public ResponseEntity<Object> findById(@Valid @PathVariable @NotNull @Positive Long id) {
         UserProfileDetailsResponse byId = mapper.map(profileService.findById(id));
 
         return new ResponseEntity<>(

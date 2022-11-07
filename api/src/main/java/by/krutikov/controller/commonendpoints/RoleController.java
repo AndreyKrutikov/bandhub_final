@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,8 +56,8 @@ public class RoleController {
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping
     public ResponseEntity<Object> getAllRoles() {
-        List<Role> roles = roleRepository.findAll();
-        List<RoleDetailsResponse> response = mapper.toResponseList(roles);
+        List<Role> applicationRoles = roleRepository.findAll();
+        List<RoleDetailsResponse> response = mapper.toResponseList(applicationRoles);
 
         return new ResponseEntity<>(
                 Collections.singletonMap("all app roles", response), HttpStatus.OK
@@ -81,8 +84,9 @@ public class RoleController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/{accountId}")
-    public ResponseEntity<Object> getRolesByAccountId(@PathVariable(value = "accountId") Long id) {
-        List<RoleDetailsResponse> response = mapper.toResponseList(roleRepository.findRolesByAccountId(id));
+    public ResponseEntity<Object> getRolesByAccountId(@Valid @PathVariable(value = "accountId") @NotNull @Positive Long id) {
+        List<Role> accountRoles = roleRepository.findRolesByAccountId(id);
+        List<RoleDetailsResponse> response = mapper.toResponseList(accountRoles);
 
         return new ResponseEntity<>(
                 Collections.singletonMap("all roles by account id", response), HttpStatus.OK

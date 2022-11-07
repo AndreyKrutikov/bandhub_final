@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,7 +85,7 @@ public class MediaController {
             content = @Content
     )
     @GetMapping("/by-profile-id")
-    public ResponseEntity<Object> findAllMediaByProfileId(@RequestParam(name = "profileId") Long id) {
+    public ResponseEntity<Object> findAllMediaByProfileId(@Valid @RequestParam(name = "profileId") @NotNull @Positive Long id) {
         List<Media> allByUserProfileId = mediaService.findAllByUserProfileId(id);
         List<MediaDetailsResponse> response = mapper.toList(allByUserProfileId);
 

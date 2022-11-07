@@ -10,5 +10,5 @@ import javax.validation.constraints.NotNull;
 public class PostReactionRequest {
     @NotNull
     @ValueOfEnum(enumClass = ReactionType.class, message = "Unsupported reaction type")
-    private ReactionType reactionType;
+    private String reactionType;
 }

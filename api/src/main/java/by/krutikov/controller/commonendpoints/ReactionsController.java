@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -68,7 +71,7 @@ public class ReactionsController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping()
-    public ResponseEntity<Object> getAllProfileReactions(@PathVariable Long profileId) {
+    public ResponseEntity<Object> getAllProfileReactions(@Valid @PathVariable @NotNull @Positive Long profileId) {
         UserProfile profile = profileService.findById(profileId);
 
         Map<String, Object> model = new LinkedHashMap<>();
@@ -103,8 +106,8 @@ public class ReactionsController {
     @PostMapping
     @Transactional
     public ResponseEntity<Object> postReaction(Principal principal,
-                                               @PathVariable(name = "profileId") Long idLiked,
-                                               @RequestBody PostReactionRequest request) {
+                                               @Valid @PathVariable(name = "profileId") @NotNull @Positive Long idLiked,
+                                               @Valid @RequestBody PostReactionRequest request) {
         String email = PrincipalUtil.getEmail(principal);
         UserProfile profileFrom = accountService.findByEmail(email).getUserProfile();
         UserProfile profileTo = profileService.findById(idLiked);
@@ -143,7 +146,7 @@ public class ReactionsController {
     @DeleteMapping
     @Transactional
     public ResponseEntity<Object> deleteReaction(Principal principal,
-                                                 @PathVariable(name = "profileId") Long idLiked) {
+                                                 @Valid @PathVariable(name = "profileId") @NotNull @Positive Long idLiked) {
         String email = PrincipalUtil.getEmail(principal);
         UserProfile profileFrom = accountService.findByEmail(email).getUserProfile();
         Long thisId = profileFrom.getId();
