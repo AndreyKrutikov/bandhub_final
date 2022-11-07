@@ -1,4 +1,4 @@
-package by.krutikov.controller.appendpoints;
+package by.krutikov.controller.commonendpoints;
 
 import by.krutikov.domain.Account;
 import by.krutikov.dto.request.UpdateAccountStatusRequest;

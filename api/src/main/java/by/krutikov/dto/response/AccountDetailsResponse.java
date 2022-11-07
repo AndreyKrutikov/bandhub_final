@@ -14,5 +14,5 @@ public class AccountDetailsResponse {
     private Boolean isLocked;
     private Timestamp dateCreated;
     private Timestamp dateModified;
-    private List <Role> roles;
+    private List <RoleDetailsResponse> roles;
 }

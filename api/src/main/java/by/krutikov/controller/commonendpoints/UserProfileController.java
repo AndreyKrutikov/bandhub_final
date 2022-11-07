@@ -1,9 +1,8 @@
-package by.krutikov.controller.appendpoints;
+package by.krutikov.controller.commonendpoints;
 
 import by.krutikov.domain.UserProfile;
 import by.krutikov.dto.response.UserProfileDetailsResponse;
 import by.krutikov.mappers.UserProfileMapper;
-import by.krutikov.service.AccountService;
 import by.krutikov.service.UserProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,7 +31,6 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.HEADER;
 @RequestMapping("/profiles")
 public class UserProfileController {
     private final UserProfileService profileService;
-    private final AccountService accountService;
     private final UserProfileMapper mapper;
 
     @Operation(summary = "Get user profiles",
@@ -64,7 +62,19 @@ public class UserProfileController {
         );
     }
 
-    // TODO: 31.10.22
+    @Operation(summary = "Get user profile by id",
+            description = "Get user profile by id. No authorities required ")
+    @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
+    @ApiResponse(
+            responseCode = "200",
+            description = "Profiles found",
+            content = @Content(
+                    mediaType = "application/json",
+                    array = @ArraySchema(
+                            schema = @Schema(implementation = UserProfileDetailsResponse.class)
+                    )
+            )
+    )
     @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable long id) {
         UserProfileDetailsResponse byId = mapper.map(profileService.findById(id));

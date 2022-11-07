@@ -1,4 +1,4 @@
-package by.krutikov.controller.appendpoints;
+package by.krutikov.controller.commonendpoints;
 
 import by.krutikov.domain.Reaction;
 import by.krutikov.domain.UserProfile;

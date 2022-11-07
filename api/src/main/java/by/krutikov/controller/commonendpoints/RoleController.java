@@ -1,7 +1,6 @@
-package by.krutikov.controller.appendpoints;
+package by.krutikov.controller.commonendpoints;
 
 import by.krutikov.domain.Role;
-import by.krutikov.dto.response.AccountDetailsResponse;
 import by.krutikov.dto.response.RoleDetailsResponse;
 import by.krutikov.mappers.RoleMapper;
 import by.krutikov.repository.RoleRepository;
@@ -89,9 +88,4 @@ public class RoleController {
                 Collections.singletonMap("all roles by account id", response), HttpStatus.OK
         );
     }
-
-
-
-
-
 }
