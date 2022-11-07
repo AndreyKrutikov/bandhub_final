@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 // TODO: 31.10.22 check @NotBlank over displayedName and description fields
 @Data
 public class UserProfileDetailsUpdate {
-   // @NotBlank
+    // @NotBlank
     @Size(min = 1, max = 255)
     private String displayedName;
 
@@ -29,10 +29,12 @@ public class UserProfileDetailsUpdate {
     private String phoneNumber;
 
     @ValueOfEnum(enumClass = InstrumentType.class, message = "Unsupported instrument type")
-    private InstrumentType instrument;
+    private String instrument;
+//    private InstrumentType instrument;
 
     @ValueOfEnum(enumClass = ExperienceLevel.class, message = "Unsupported experience level")
-    private ExperienceLevel experience;
+    private String experience;
+//    private ExperienceLevel experience;
 
     //@NotBlank
     @Size(min = 1, max = 255)

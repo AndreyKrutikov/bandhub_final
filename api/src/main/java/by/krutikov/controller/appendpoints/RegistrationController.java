@@ -1,4 +1,4 @@
-package by.krutikov.controller;
+package by.krutikov.controller.appendpoints;
 
 import by.krutikov.domain.Account;
 import by.krutikov.dto.request.AccountDetails;

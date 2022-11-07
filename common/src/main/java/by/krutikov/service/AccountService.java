@@ -18,5 +18,9 @@ public interface AccountService {
 
     Account findByEmail(String email);
 
+    Account setAdminRole(Account account);
+
+    Account removeAdminRole(Account account);
+
     void addRole (Account account, Role role);
 }

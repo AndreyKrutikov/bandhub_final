@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public class PrincipalUtil {
 
-    public static String getUsername(Principal principal) {
+    public static String getEmail(Principal principal) {
         Object castedPrincipal = ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
         return ((User) castedPrincipal).getUsername();
     }

@@ -24,12 +24,12 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public List<Reaction> findReactionsByFromProfile(Long fromProfileId) {
+    public List<Reaction> findReactionsByFromProfileId(Long fromProfileId) {
         return reactionRepository.findReactionsByFromProfile(fromProfileId);
     }
 
     @Override
-    public List<Reaction> findReactionsByToProfile(Long toProfileId) {
+    public List<Reaction> findReactionsByToProfileId(Long toProfileId) {
         return reactionRepository.findReactionsByToProfile(toProfileId);
     }
 

@@ -59,7 +59,7 @@ public class PersonalEndpointSearchController {
     )
     @GetMapping()
     public ResponseEntity<Object> findUnseenDistanceOrdered(Principal principal) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         UserProfile myProfile = accountService.findByEmail(email).getUserProfile();
 
         List<UserProfile> allFoundProfiles = profileService.findAllDistanceOrdered(myProfile.getLocation());
@@ -91,7 +91,7 @@ public class PersonalEndpointSearchController {
     public ResponseEntity<Object> findUnseenFilteredAndDistanceOrdered(Principal principal,
                                                    @RequestParam ExperienceLevel experienceLevel,
                                                    @RequestParam InstrumentType instrumentType) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         UserProfile myProfile = accountService.findByEmail(email).getUserProfile();
 
         List<UserProfile> allFoundProfiles = profileService.findByCriteriaDistanceOrdered(

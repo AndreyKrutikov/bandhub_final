@@ -61,7 +61,7 @@ public class PersonalEndpointUserProfileController {
     )
     @GetMapping()
     public ResponseEntity<Object> showProfileDetails(Principal principal) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         Account myAccount = accountService.findByEmail(email);
         UserProfile myProfile = myAccount.getUserProfile();
         UserProfileDetailsResponse response = mapper.map(myProfile);
@@ -101,7 +101,7 @@ public class PersonalEndpointUserProfileController {
     @Transactional
     public ResponseEntity<Object> createNewUserProfile(Principal principal,
                                                        @Valid @RequestBody UserProfileDetails request) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         Account myAccount = accountService.findByEmail(email);
 
         UserProfile newProfile = mapper.map(request);
@@ -140,7 +140,7 @@ public class PersonalEndpointUserProfileController {
     @Transactional
     public ResponseEntity<Object> updateUserProfile(Principal principal,
                                                     @Valid @RequestBody UserProfileDetailsUpdate updateInfo) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         Account myAccount = accountService.findByEmail(email);
 
         UserProfile profileToUpdate = myAccount.getUserProfile();
@@ -169,7 +169,7 @@ public class PersonalEndpointUserProfileController {
     @DeleteMapping()
     @Transactional
     public ResponseEntity<Object> deleteUserProfile(Principal principal) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         Account myAccount = accountService.findByEmail(email);
 
         UserProfile profileToBeDeleted = myAccount.getUserProfile();

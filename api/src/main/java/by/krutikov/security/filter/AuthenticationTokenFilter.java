@@ -1,7 +1,7 @@
 package by.krutikov.security.filter;
 
 import by.krutikov.security.CustomHeader;
-import by.krutikov.security.jwt.JwtTokenUtils;
+import by.krutikov.security.jwt.JwtTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +19,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
-    private final JwtTokenUtils tokenUtils;
+    private final JwtTokenService tokenService;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -30,11 +30,11 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
         String authToken = httpRequest.getHeader(CustomHeader.X_AUTH_TOKEN);
 
         if (authToken != null) {
-            String username = tokenUtils.getUsernameFromToken(authToken);
+            String username = tokenService.getUsernameFromToken(authToken);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                if (tokenUtils.validateToken(authToken, userDetails)) {
+                if (tokenService.validateToken(authToken, userDetails)) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails,
                            null,

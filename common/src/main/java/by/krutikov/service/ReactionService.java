@@ -9,9 +9,9 @@ import java.util.List;
 public interface ReactionService {
     Reaction findByFromProfileAndToProfile(Long fromProfileId, Long toProfileId);
 
-    List<Reaction> findReactionsByFromProfile(Long fromProfileId);
+    List<Reaction> findReactionsByFromProfileId(Long fromProfileId);
 
-    List<Reaction> findReactionsByToProfile(Long toProfileId);
+    List<Reaction> findReactionsByToProfileId(Long toProfileId);
 
     void deleteByFromProfileIdAndToProfileId(Long fromProfileId, Long toProfileId);
 

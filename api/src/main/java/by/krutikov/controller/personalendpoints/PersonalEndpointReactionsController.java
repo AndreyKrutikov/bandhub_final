@@ -61,7 +61,7 @@ public class PersonalEndpointReactionsController {
     )
     @GetMapping()
     public ResponseEntity<Object> showAllReactions(Principal principal) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         Account myAccount = accountService.findByEmail(email);
 
         Set<Reaction> myReactions = myAccount.getUserProfile().getMyReactions();
@@ -93,7 +93,7 @@ public class PersonalEndpointReactionsController {
     )
     @GetMapping("/intersections")
     public ResponseEntity<Object> showMutualLikeReactionProfiles(Principal principal) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         UserProfile myProfile = accountService.findByEmail(email).getUserProfile();
 
         List<UserProfile> matchingProfiles = reactionService.findLikeReactionMatchingProfiles(myProfile);

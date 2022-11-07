@@ -1,4 +1,4 @@
-package by.krutikov.controller;
+package by.krutikov.controller.appendpoints;
 
 import by.krutikov.domain.UserProfile;
 import by.krutikov.dto.response.UserProfileDetailsResponse;

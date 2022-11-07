@@ -36,11 +36,13 @@ public class UserProfileDetails {
 
     @NotNull
     @ValueOfEnum(enumClass = InstrumentType.class, message = "Unsupported instrument type")
-    private InstrumentType instrument;
+    private String instrument;
+//    private InstrumentType instrument;
 
     @NotNull
     @ValueOfEnum(enumClass = ExperienceLevel.class, message = "Unsupported experience level")
-    private ExperienceLevel experience;
+    private String experience;
+//    private ExperienceLevel experience;
 
     @NotBlank
     @Size(min = 1, max = 255)

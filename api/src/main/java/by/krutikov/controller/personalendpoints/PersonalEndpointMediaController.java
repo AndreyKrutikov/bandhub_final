@@ -67,7 +67,7 @@ public class PersonalEndpointMediaController {
     )
     @GetMapping()
     public ResponseEntity<Object> showAllMedia(Principal principal) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         Account myAccount = accountService.findByEmail(email);
         Set<Media> media = myAccount.getUserProfile().getMedia();
 
@@ -98,7 +98,7 @@ public class PersonalEndpointMediaController {
     @Transactional
     public ResponseEntity<Object> createMedia(Principal principal,
                                               @Valid @RequestBody MediaDetails createInfo) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         UserProfile myProfile = accountService.findByEmail(email).getUserProfile();
 
         Media newMedia = mapper.map(createInfo);
@@ -138,7 +138,7 @@ public class PersonalEndpointMediaController {
     public ResponseEntity<Object> updateMedia(Principal principal,
                                               @PathVariable Long id,
                                               @Valid @RequestBody MediaDetailsUpdate updateInfo) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         UserProfile myProfile = accountService.findByEmail(email).getUserProfile();
 
         Media toBeUpdated = myProfile.getMedia()
@@ -178,7 +178,7 @@ public class PersonalEndpointMediaController {
     @Transactional
     public ResponseEntity<Object> deleteMedia(Principal principal,
                                               @PathVariable Long id) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         UserProfile myProfile = accountService.findByEmail(email).getUserProfile();
 
         Media toBeDeleted = myProfile.getMedia()

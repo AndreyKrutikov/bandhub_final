@@ -1,7 +1,7 @@
 package by.krutikov.security;
 
 import by.krutikov.security.filter.AuthenticationTokenFilter;
-import by.krutikov.security.jwt.JwtTokenUtils;
+import by.krutikov.security.jwt.JwtTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 )
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userProvider;
-    private final JwtTokenUtils tokenUtils;
+    private final JwtTokenService tokenService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -41,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationTokenFilter authenticationTokenFilterBean(AuthenticationManager authenticationManager) throws Exception {
-        AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter(tokenUtils, userProvider);
+        AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter(tokenService, userProvider);
         authenticationTokenFilter.setAuthenticationManager(authenticationManager);
         return authenticationTokenFilter;
     }
@@ -76,8 +75,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/roles/**").permitAll()
                 .antMatchers("/media/**").permitAll()
                 .antMatchers("/reactions/**").permitAll()
-                //.antMatchers("/profiles/**").hasAnyRole("ADMIN", "MODERATOR")
-                //.antMatchers("/accounts").hasAnyRole("ADMIN", "MODERATOR")
                 .anyRequest().authenticated();
 
         // Custom JWT based authentication
@@ -85,7 +82,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(authenticationTokenFilterBean(authenticationManagerBean()), AuthenticationTokenFilter.class);
     }
 
-    //For swagger access only
+    /**
+     * For swagger access only
+     */
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()

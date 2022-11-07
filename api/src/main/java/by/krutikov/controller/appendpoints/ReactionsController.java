@@ -1,4 +1,4 @@
-package by.krutikov.controller;
+package by.krutikov.controller.appendpoints;
 
 import by.krutikov.domain.Reaction;
 import by.krutikov.domain.UserProfile;
@@ -105,7 +105,7 @@ public class ReactionsController {
     public ResponseEntity<Object> postReaction(Principal principal,
                                                @PathVariable(name = "profileId") Long idLiked,
                                                @RequestBody PostReactionRequest request) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         UserProfile profileFrom = accountService.findByEmail(email).getUserProfile();
         UserProfile profileTo = profileService.findById(idLiked);
         Long thisId = profileFrom.getId();
@@ -144,7 +144,7 @@ public class ReactionsController {
     @Transactional
     public ResponseEntity<Object> deleteReaction(Principal principal,
                                                  @PathVariable(name = "profileId") Long idLiked) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         UserProfile profileFrom = accountService.findByEmail(email).getUserProfile();
         Long thisId = profileFrom.getId();
 

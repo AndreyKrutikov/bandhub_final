@@ -16,9 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
-        uses = {RoleMapper.class,
-                PasswordEncoderMapper.class}
-)
+        uses = {RoleMapper.class, PasswordEncoderMapper.class})
 public interface AccountMapper {
     @Mapping(source = "password", target = "password", qualifiedBy = EncodedMapping.class)
     Account map(AccountDetails request);
@@ -38,9 +36,3 @@ public interface AccountMapper {
                 .collect(Collectors.toList());
     }
 }
-//@Mapper(uses = PasswordEncoderMapper.class)
-//public interface UserMapper {
-//
-//    @Mapping(source = "password", target = "encryptedPassword", qualifiedBy = EncodedMapping.class)
-//    UserDto createUserRequestModelToUserDto(CreateUserRequestModel userRequestModel);
-//}

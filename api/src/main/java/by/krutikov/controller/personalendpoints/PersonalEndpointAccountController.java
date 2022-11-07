@@ -56,7 +56,7 @@ public class PersonalEndpointAccountController {
     )
     @GetMapping()
     public ResponseEntity<Object> showAccountDetails(Principal principal) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         Account myAccount = accountService.findByEmail(email);
         AccountDetailsResponse response = mapper.map(myAccount);
 
@@ -85,7 +85,7 @@ public class PersonalEndpointAccountController {
     @Transactional
     public ResponseEntity<Object> updateCredentials(Principal principal,
                                                     @Valid @RequestBody AccountDetailsUpdate updateInfo) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         Account myAccount = accountService.findByEmail(email);
         mapper.update(myAccount, updateInfo);
 
@@ -113,7 +113,7 @@ public class PersonalEndpointAccountController {
     @DeleteMapping()
     @Transactional
     public ResponseEntity<Object> deleteAccount(Principal principal) {
-        String email = PrincipalUtil.getUsername(principal);
+        String email = PrincipalUtil.getEmail(principal);
         Account myAccount = accountService.findByEmail(email);
         accountService.deleteById(myAccount.getId());
         //PRINCIPAL = null?

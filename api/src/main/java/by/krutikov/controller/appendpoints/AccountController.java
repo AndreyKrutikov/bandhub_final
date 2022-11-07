@@ -1,4 +1,4 @@
-package by.krutikov.controller;
+package by.krutikov.controller.appendpoints;
 
 import by.krutikov.domain.Account;
 import by.krutikov.dto.request.UpdateAccountStatusRequest;
@@ -76,7 +76,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Get account by id",
-            description = "Get account by id, admin/moderator use only")
+            description = "Get account by id, admin/moderator authorities only")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "200",
@@ -107,7 +107,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Find account by email",
-            description = "Find account by email. Admin/moderator use only")
+            description = "Find account by email. Admin/moderator authorities only")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "200",
@@ -138,7 +138,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Update account status by id",
-            description = "Set account status locked or unlocked, admin/moderator use only")
+            description = "Set account status locked or unlocked, admin/moderator authorities only")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "200",
@@ -161,8 +161,8 @@ public class AccountController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @Transactional
-    public ResponseEntity<Object> updateStatus(@PathVariable Long id,
-                                               @Valid @RequestBody UpdateAccountStatusRequest request) {
+    public ResponseEntity<Object> updateAccountStatus(@PathVariable Long id,
+                                                      @Valid @RequestBody UpdateAccountStatusRequest request) {
         Account currentAccount = accountService.findById(id);
         currentAccount.setIsLocked(request.getIsLocked());
 
@@ -175,8 +175,78 @@ public class AccountController {
         );
     }
 
+    @Operation(summary = "Set admin authorities to account",
+            description = "Set admin authorities to account by account id. Moderator endpoint")
+    @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
+    @ApiResponse(
+            responseCode = "200",
+            description = "Admin authorities set to account",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = AccountDetailsResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "403",
+            description = "Access denied. Moderator authorities only",
+            content = @Content
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Account not found",
+            content = @Content
+    )
+    @PatchMapping("/{id}/set-admin-authorities")
+    @PreAuthorize("hasRole('MODERATOR')")
+    @Transactional
+    public ResponseEntity<Object> grantAdminAuthorities(@Valid @PathVariable @NotNull @Positive Long id) {
+        Account currentAccount = accountService.findById(id);
+        currentAccount = accountService.setAdminRole(currentAccount);
+
+        AccountDetailsResponse response = mapper.map(currentAccount);
+
+        return new ResponseEntity<>(
+                Collections.singletonMap("Admin role set to account", response), HttpStatus.OK
+        );
+    }
+
+    @Operation(summary = "Revoke account admin authorities",
+            description = "Revoke account admin authorities by account id. Moderator endpoint")
+    @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
+    @ApiResponse(
+            responseCode = "200",
+            description = "Admin authorities removed",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = AccountDetailsResponse.class)
+            )
+    )
+    @ApiResponse(
+            responseCode = "403",
+            description = "Access denied. Moderator authorities only",
+            content = @Content
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Account not found",
+            content = @Content
+    )
+    @PatchMapping("/{id}/remove-admin-authorities")
+    @PreAuthorize("hasRole('MODERATOR')")
+    @Transactional
+    public ResponseEntity<Object> revokeAdminAuthorities(@Valid @PathVariable @NotNull @Positive Long id) {
+        Account currentAccount = accountService.findById(id);
+        currentAccount = accountService.removeAdminRole(currentAccount);
+
+        AccountDetailsResponse response = mapper.map(currentAccount);
+
+        return new ResponseEntity<>(
+                Collections.singletonMap("Admin role removed from account", response), HttpStatus.OK
+        );
+    }
+
     @Operation(summary = "Delete account by id",
-            description = "Delete account. Admin/moderator use only")
+            description = "Delete account. Admin/moderator authorities only")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "403",

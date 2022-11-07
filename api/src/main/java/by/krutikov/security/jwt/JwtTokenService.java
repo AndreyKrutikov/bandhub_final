@@ -23,7 +23,7 @@ import static java.util.Calendar.MILLISECOND;
 
 @Component
 @RequiredArgsConstructor
-public class JwtTokenUtils {
+public class JwtTokenService {
     public static final String CREATED = "created";
     public static final String EXPIRES = "expires";
     public static final String ROLES = "roles";

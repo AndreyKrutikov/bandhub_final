@@ -1,8 +1,8 @@
-package by.krutikov.controller;
+package by.krutikov.controller.appendpoints;
 
 import by.krutikov.dto.request.AccountDetails;
 import by.krutikov.dto.response.AuthResponse;
-import by.krutikov.security.jwt.JwtTokenUtils;
+import by.krutikov.security.jwt.JwtTokenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,17 +29,11 @@ import static io.swagger.v3.oas.annotations.enums.ParameterIn.HEADER;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenUtils tokenUtils;
+    private final JwtTokenService tokenService;
     private final UserDetailsService userProvider;
 
     // TODO: 31.10.22 document this
 
-    //    @ApiOperation(value = "Login user in system", notes = "Return Auth-Token with user login")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "Successful authorization"),
-//            @ApiResponse(code = 400, message = "Request error"),
-//            @ApiResponse(code = 500, message = "Server error")
-//    })
     @Operation(summary = "Login user",
             description = "Login endpoint. Returns JWT token string & user email")
     @PostMapping("/signin")
@@ -59,30 +53,30 @@ public class AuthenticationController {
                 AuthResponse
                         .builder()
                         .email(request.getEmail())
-                        .token(tokenUtils.generateToken(userProvider.loadUserByUsername(request.getEmail())))
+                        .token(tokenService.generateToken(userProvider.loadUserByUsername(request.getEmail())))
                         .build()
         );
     }
 
+    // TODO: 7.11.22 check token is destroyed
     @Operation(summary = "Logout user",
             description = "Logout endpoint. Destroys token & invalidates authentication")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
             responseCode = "200",
-            description = ""
+            description = "Logged out successfully"
     )
     @ApiResponse(
             responseCode = "403",
-            description = "Access denied. Account owner authorities only",
+            description = "Access denied. Logged in user authorities only",
             content = @Content
     )
     @GetMapping("/logout")
     public ResponseEntity<Object> logoutUser(@RequestHeader(X_AUTH_TOKEN) String token) {
        // SecurityContextHolder.getContext().setAuthentication(null);
-        tokenUtils.destroyToken(token);
+        tokenService.destroyToken(token);
 
         return ResponseEntity.ok("You are logged out, this token = " + token);
     }
-
 }
 
