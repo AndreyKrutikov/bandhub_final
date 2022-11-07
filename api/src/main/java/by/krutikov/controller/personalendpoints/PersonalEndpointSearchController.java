@@ -89,8 +89,8 @@ public class PersonalEndpointSearchController {
     )
     @GetMapping("/specified")
     public ResponseEntity<Object> findUnseenFilteredAndDistanceOrdered(Principal principal,
-                                                   @RequestParam ExperienceLevel experienceLevel,
-                                                   @RequestParam InstrumentType instrumentType) {
+                                                                       @RequestParam ExperienceLevel experienceLevel,
+                                                                       @RequestParam InstrumentType instrumentType) {
         String email = PrincipalUtil.getEmail(principal);
         UserProfile myProfile = accountService.findByEmail(email).getUserProfile();
 

@@ -8,7 +8,6 @@ import javax.validation.constraints.Pattern;
 
 @Data
 public class AccountDetails {
-    //todo NULLABLE DTO for update
     @NotNull
     @Email(message = "Invalid email")
     private String email;

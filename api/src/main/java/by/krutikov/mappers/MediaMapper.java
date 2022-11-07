@@ -32,6 +32,7 @@ public interface MediaMapper {
                 .map(this::map)
                 .collect(Collectors.toList());
     }
+
     default List<MediaDetailsResponse> toList(List<Media> media) {
         return media.stream()
                 .map(this::map)

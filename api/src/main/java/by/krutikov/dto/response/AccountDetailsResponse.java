@@ -1,6 +1,5 @@
 package by.krutikov.dto.response;
 
-import by.krutikov.domain.Role;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -14,5 +13,5 @@ public class AccountDetailsResponse {
     private Boolean isLocked;
     private Timestamp dateCreated;
     private Timestamp dateModified;
-    private List <RoleDetailsResponse> roles;
+    private List<RoleDetailsResponse> roles;
 }

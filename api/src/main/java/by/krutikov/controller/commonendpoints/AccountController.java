@@ -129,7 +129,7 @@ public class AccountController {
     )
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @GetMapping("/find-by-email")
-    public ResponseEntity<Object> findByEmail(@RequestParam @NotNull @Email String email) {
+    public ResponseEntity<Object> findByEmail(@Valid @RequestParam @NotNull @Email String email) {
         AccountDetailsResponse byEmail = mapper.map(accountService.findByEmail(email));
 
         return new ResponseEntity<>(
@@ -161,7 +161,7 @@ public class AccountController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR')")
     @Transactional
-    public ResponseEntity<Object> updateAccountStatus(@PathVariable Long id,
+    public ResponseEntity<Object> updateAccountStatus(@Valid @PathVariable @NotNull @Positive Long id,
                                                       @Valid @RequestBody UpdateAccountStatusRequest request) {
         Account currentAccount = accountService.findById(id);
         currentAccount.setIsLocked(request.getIsLocked());
@@ -249,8 +249,18 @@ public class AccountController {
             description = "Delete account. Admin/moderator authorities only")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)
     @ApiResponse(
+            responseCode = "204",
+            description = "Account deleted",
+            content = @Content
+    )
+    @ApiResponse(
             responseCode = "403",
             description = "Access denied. Admin/moderator authorities only",
+            content = @Content
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Account not found",
             content = @Content
     )
     @DeleteMapping("/{id}")
