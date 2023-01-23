@@ -72,7 +72,7 @@ public class AuthenticationController {
         );
     }
 
-    // TODO: 7.11.22 check token is destroyed
+    // TODO: 19.01.2023 investigate logout; check token is destroyed
     @Operation(summary = "Logout user",
             description = "Logout endpoint. Destroys token & invalidates authentication")
     @Parameter(in = HEADER, name = X_AUTH_TOKEN, required = true)

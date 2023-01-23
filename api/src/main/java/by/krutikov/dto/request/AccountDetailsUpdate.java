@@ -7,6 +7,7 @@ import javax.validation.constraints.Pattern;
 
 @Data
 public class AccountDetailsUpdate {
+
     @Email(message = "Invalid email")
     private String email;
 

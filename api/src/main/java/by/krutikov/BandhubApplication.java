@@ -11,5 +11,4 @@ public class BandhubApplication {
     public static void main(String[] args) {
         SpringApplication.run(BandhubApplication.class, args);
     }
-
 }
